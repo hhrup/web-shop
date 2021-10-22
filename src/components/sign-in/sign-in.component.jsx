@@ -6,14 +6,15 @@ import CustomButton from '../custom-button/custom-button.component';
 import FormTitle from '../form-title/form-title.component';
 import { SignInContainer, SignInWithGoogle, Separator } from './sign-in.styles';
 import { signInWithPopup } from 'firebase/auth';
+import { Redirect } from 'react-router';
 
 class SignIn extends Component {
-
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       email: '',
-      password: ''
+      password: '',
+      currentUser: props.currentUser,
     }
 
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -22,30 +23,12 @@ class SignIn extends Component {
   }
 
   signInWithGoogle= async () => {
-
     try {
       const result = await signInWithPopup(auth, googleAuthProvider);
       console.log(result);
     } catch (error) {
       console.error(error);
     }
-    //.then((result) => {
-    //  // This gives you a Google Access Token. You can use it to access the Google API.
-    //  const credential = GoogleAuthProvider.credentialFromResult(result);
-    //  const token = credential.accessToken;
-    //  // The signed-in user info.
-    //  const user = result.user;
-    //  // ...
-    //}).catch((error) => {
-    //  // Handle Errors here.
-    //  const errorCode = error.code;
-    //  const errorMessage = error.message;
-    //  // The email of the user's account used.
-    //  const email = error.email;
-    //  // The AuthCredential type that was used.
-    //  const credential = GoogleAuthProvider.credentialFromError(error);
-    //  // ...
-    //});
   }
 
   handleSubmit= async e => {
@@ -92,7 +75,6 @@ class SignIn extends Component {
             type='email'
             value={email}
             handleChange={this.handleChange}
-            // placeholder='eMail'
             labelName='Email'
           />
           <FormInput
@@ -100,15 +82,17 @@ class SignIn extends Component {
             type='password'
             value={password}
             handleChange={this.handleChange}
-            // placeholder='password'
             labelName='Password'
           />
           <CustomButton type='submit' name='SIGN IN' />
         </form>
 
-        <Separator />
+        <Separator>OR SIGN IN WITH:</Separator>
 
         <SignInWithGoogle onClick={this.signInWithGoogle}/>
+        {
+          this.props.currentUser && <Redirect to='/' />
+        }
       </SignInContainer>
     );
   }

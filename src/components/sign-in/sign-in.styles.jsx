@@ -22,5 +22,6 @@ export const SignInWithGoogle = styled(GoogleIcon)`
 `;
 
 export const Separator = styled.div`
-  border-top: 1px solid;
+  border-bottom: 1px solid;
+  font-size: 1.4rem;
 `;

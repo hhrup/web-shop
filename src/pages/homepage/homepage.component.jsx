@@ -1,27 +1,17 @@
 import React, { Component } from 'react';
-import { auth } from '../../firebase/firebase.auth';
 import { HomePageContainer } from './homepage.styles';
+import configData from '../../appConfig';
 
-class Homepage extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      currentUser: undefined,
+
+const Homepage = ({currentUser}) => (
+  <HomePageContainer>
+    <h1>Hello!</h1>
+    <h2>{currentUser.email}</h2>
+    {
+      currentUser.uid === configData.adminFirebaseUserId ?
+      <h3>ADMIN CONTROLS </h3> : ''
     }
-  }
-
-  componentDidMount() {
-    
-  }
-
-  render() {
-    return(
-      <HomePageContainer>
-
-      </HomePageContainer>
-    )
-  }
-
-}
+  </HomePageContainer>
+);
 
 export default Homepage;

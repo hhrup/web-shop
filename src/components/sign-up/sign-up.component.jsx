@@ -4,10 +4,11 @@ import CustomButton from '../custom-button/custom-button.component';
 import { createUserWithEmailAndPassword } from 'firebase/auth'
 import { auth } from '../../firebase/firebase.auth';
 import FormTitle from '../form-title/form-title.component';
+import { Redirect } from 'react-router';
 
 class SignUp extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       email: '',
       password: '',
@@ -73,7 +74,6 @@ class SignUp extends Component {
           handleChange={this.handleChange}
           value={email}
           type='email'
-          // placeholder='email@example.com'
           labelName='Email'
         />
         <FormInput
@@ -81,7 +81,6 @@ class SignUp extends Component {
           handleChange={this.handleChange}
           value={password}
           type='password'
-          // placeholder='enter the password'
           labelName='Password'
         />
         <FormInput
@@ -89,10 +88,12 @@ class SignUp extends Component {
           handleChange={this.handleChange}
           value={confirmPassword}
           type='password'
-          // placeholder='confirm password'
           labelName='Confirm password'
         />
         <CustomButton type='submit' name='SIGN UP' />
+        {
+          this.props.currentUser && <Redirect to='/' />
+        }
       </form>
     );
   }

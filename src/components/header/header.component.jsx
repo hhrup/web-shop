@@ -8,51 +8,33 @@ import {
 import { signOut, onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../../firebase/firebase.auth';
 
-class Header extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      currentUser: undefined,
-    }
-  }
-
-  async logOut() {
+const Header = ({currentUser}) => {
+  async function logOut() {
     const something = await signOut(auth);
     console.log('headerComponent sign out', something);
   }
 
-  getCurrentUser() {
+  function getCurrentUser() {
     console.log('Current user', auth.currentUser);
   }
 
-  componentDidMount() {
-      onAuthStateChanged(auth, (user) => {
-        if (user) {
-          this.setState({currentUser: user});
-        } else {
-          this.setState({currentUser: undefined});
-        }
-      })
-  }
-
-  render() {
-    return (
+  return (
       <HeaderContainer>
         <LogoContainer to='/'>
           <Logo />
         </LogoContainer>
         {
-          this.state.currentUser ?
-          (<SignUpSignIn to='#' onClick={this.logOut}>
-          WELCOME {this.state.currentUser.email.split('@')[0].toUpperCase()}. SIGN OUT?
+          currentUser ?
+          (<SignUpSignIn to='#' onClick={logOut}>
+          WELCOME {currentUser.email.split('@')[0].toUpperCase()}. SIGN OUT
           </SignUpSignIn>)
           :
           (<SignUpSignIn to='/signup'>SIGN IN</SignUpSignIn>)
         }
+        <button onClick={getCurrentUser}>getCurrentUser</button>
       </HeaderContainer>
     );
   }
-}
 
 // <button onClick={this.logOut}>SIGN OUT</button>
 // <button onClick={this.getCurrentUser}>getCurrentUser</button>
