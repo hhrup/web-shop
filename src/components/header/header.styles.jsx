@@ -21,6 +21,17 @@ export const Logo = styled(Icon)`
   width: 100%;
 `;
 
+export const CreateProductLink = styled(Link)`
+  text-decoration: none;
+  font-size: 1.6rem;
+  cursor: pointer;
+  color: inherit;
+
+  &:hover {
+    color: red;
+  }
+`;
+
 export const SignUpSignIn = styled(Link)`
   text-decoration: none;
   font-size: 1.6rem;

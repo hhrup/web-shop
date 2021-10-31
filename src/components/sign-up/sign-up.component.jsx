@@ -5,6 +5,7 @@ import { createUserWithEmailAndPassword } from 'firebase/auth'
 import { auth } from '../../firebase/firebase.auth';
 import FormTitle from '../form-title/form-title.component';
 import { Redirect } from 'react-router';
+import { validateSignUp } from '../../helperScripts/validationFunctions';
 
 class SignUp extends Component {
   constructor(props) {
@@ -24,25 +25,7 @@ class SignUp extends Component {
 
     const { email, password, confirmPassword } = this.state;
 
-    if(!email) {
-      alert(`eMail field cannot be empty!`);
-      return;
-    }
-
-    if(!password) {
-      alert(`Password field cannot be empty!`);
-      return;
-    }
-
-    if(!confirmPassword) {
-      alert(`Must confirm your password!`);
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      alert(`Passwords do not match!`);
-      return;
-    }
+    if (!validateSignUp(email, password, confirmPassword)) return;
 
     this.setState({
       email: '',
@@ -51,10 +34,9 @@ class SignUp extends Component {
     });
 
     try {
-      const result = await createUserWithEmailAndPassword(auth, email, password);
-      console.log('YEAP', result);
+      await createUserWithEmailAndPassword(auth, email, password);
     } catch (error) {
-      console.error(error);
+      alert(error);
     }
   }
 
@@ -90,7 +72,7 @@ class SignUp extends Component {
           type='password'
           labelName='Confirm password'
         />
-        <CustomButton type='submit' name='SIGN UP' />
+        <CustomButton type='submit' buttonContent='SIGN UP' />
         {
           this.props.currentUser && <Redirect to='/' />
         }

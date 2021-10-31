@@ -1,40 +1,40 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {
   HeaderContainer,
   LogoContainer,
   Logo,
   SignUpSignIn,
+  CreateProductLink
 } from './header.styles';
-import { signOut, onAuthStateChanged } from 'firebase/auth';
+import { signOut } from 'firebase/auth';
 import { auth } from '../../firebase/firebase.auth';
+import configData from '../../helperScripts/appConfig';
 
 const Header = ({currentUser}) => {
   async function logOut() {
-    const something = await signOut(auth);
-    console.log('headerComponent sign out', something);
-  }
-
-  function getCurrentUser() {
-    console.log('Current user', auth.currentUser);
+    await signOut(auth);
   }
 
   return (
-      <HeaderContainer>
-        <LogoContainer to='/'>
-          <Logo />
-        </LogoContainer>
-        {
-          currentUser ?
-          (<SignUpSignIn to='#' onClick={logOut}>
-          WELCOME {currentUser.email.split('@')[0].toUpperCase()}. SIGN OUT
-          </SignUpSignIn>)
-          :
-          (<SignUpSignIn to='/signup'>SIGN IN</SignUpSignIn>)
-        }
-        <button onClick={getCurrentUser}>getCurrentUser</button>
-      </HeaderContainer>
-    );
-  }
+    <HeaderContainer>
+      <LogoContainer to='/'>
+        <Logo />
+      </LogoContainer>
+      {
+        currentUser.uid === configData.adminFirebaseUserId && <CreateProductLink to='/createProduct'>CREATE PRODUCT</CreateProductLink>
+      }
+      {currentUser ?
+        (
+          <SignUpSignIn to='#' onClick={logOut}>
+              WELCOME {currentUser.email.split('@')[0].toUpperCase()}. SIGN OUT
+          </SignUpSignIn>
+        )
+        :
+        (<SignUpSignIn to='/signup'>SIGN IN</SignUpSignIn>)
+      }
+    </HeaderContainer>
+  );
+}
 
 // <button onClick={this.logOut}>SIGN OUT</button>
 // <button onClick={this.getCurrentUser}>getCurrentUser</button>

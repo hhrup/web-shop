@@ -7,6 +7,8 @@ import FormTitle from '../form-title/form-title.component';
 import { SignInContainer, SignInWithGoogle, Separator } from './sign-in.styles';
 import { signInWithPopup } from 'firebase/auth';
 import { Redirect } from 'react-router';
+import { validateSignIn } from "../../helperScripts/validationFunctions";
+import Loader from "../loader/loader.component";
 
 class SignIn extends Component {
   constructor(props) {
@@ -15,6 +17,7 @@ class SignIn extends Component {
       email: '',
       password: '',
       currentUser: props.currentUser,
+      isLoading: false,
     }
 
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -35,26 +38,20 @@ class SignIn extends Component {
     e.preventDefault();
     const { email, password } = this.state;
 
-    if(!email) {
-      alert(`eMail field cannot be empty!`);
-      return;
-    }
-
-    if(!password) {
-      alert(`Password field cannot be empty!`);
-      return;
-    }
+    if (!validateSignIn(email, password)) return;
 
     try {
-      const result = await signInWithEmailAndPassword(auth, email, password);
-      console.log('Signed in?', result);
+      this.setState({isLoading: true})
+      await signInWithEmailAndPassword(auth, email, password);
     } catch (error) {
+      alert(error);
       console.error(error);
     }
 
     this.setState({
       email: '',
       password: '',
+      isLoading: false
     });
   }
 
@@ -84,15 +81,16 @@ class SignIn extends Component {
             handleChange={this.handleChange}
             labelName='Password'
           />
-          <CustomButton type='submit' name='SIGN IN' />
+          <CustomButton type='submit' buttonContent='SIGN IN' />
         </form>
 
         <Separator>OR SIGN IN WITH:</Separator>
 
-        <SignInWithGoogle onClick={this.signInWithGoogle}/>
-        {
-          this.props.currentUser && <Redirect to='/' />
-        }
+        <SignInWithGoogle onClick={this.signInWithGoogle} />
+
+        {this.state.isLoading && <Loader />}
+
+        {this.props.currentUser && <Redirect to='/' />}
       </SignInContainer>
     );
   }
