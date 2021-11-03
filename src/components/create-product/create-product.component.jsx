@@ -1,10 +1,7 @@
 import React, { Component } from 'react';
 import { CreateProductContainer } from './create-product.styles';
 import FormInput from '../form-input/form-input.component';
-import {
-  getCategoriesOrProducts,
-  uploadProduct
-} from '../../firebase/firebase.database';
+import { getCategoriesOrProducts, uploadProduct } from '../../firebase/firebase.database';
 import CustomButton from '../custom-button/custom-button.component';
 import ImgPreview from '../img-preview/img-preview.component';
 import FormTitle from '../form-title/form-title.component';
@@ -13,7 +10,7 @@ import Loader from '../loader/loader.component';
 
 class CreateProduct extends Component {
   constructor(props) {
-    super(props)
+    super(props);
 
     this.state = {
       name: '',
@@ -25,7 +22,7 @@ class CreateProduct extends Component {
       imgName: '',
       file: undefined,
       isUploading: false,
-    }
+    };
 
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -34,17 +31,17 @@ class CreateProduct extends Component {
 
   async handleSubmit(e) {
     e.preventDefault();
-    this.setState({isUploading: true});
 
     const product = {
       name: this.state.name.trim(),
       category: this.state.category.trim(),
       description: this.state.description.trim(),
-      price: this.state.price
-    }
+      price: this.state.price,
+    };
     const file = this.state.file;
 
     if (!validateProductCreation(file, product)) return;
+    this.setState({ isUploading: true });
 
     await uploadProduct(file, product);
 
@@ -61,13 +58,13 @@ class CreateProduct extends Component {
   }
 
   previewImage(file) {
-    if(file) {
+    if (file) {
       const fr = new FileReader();
 
       fr.addEventListener('load', (e) => {
-        this.setState({imgPreviewUrl: e.target.result, file: file});
+        this.setState({ imgPreviewUrl: e.target.result, file: file });
       });
-      fr.readAsDataURL(file);
+      fr.readAsDataURL(file); // starts reading the file, load event fired when read completes successfully
     }
   }
 
@@ -78,7 +75,7 @@ class CreateProduct extends Component {
 
       if (fileHandle && fileHandle.kind === 'file') {
         const file = await fileHandle.getFile();
-        this.setState({imgName: file.name})
+        this.setState({ imgName: file.name });
         this.previewImage(file);
       }
     } catch (error) {
@@ -87,18 +84,17 @@ class CreateProduct extends Component {
   }
 
   handleChange(e) {
-    let {name, value} = e.target;
+    let { name, value } = e.target;
 
-    if (name === 'price')
-      value = Number.parseFloat(value);
+    if (name === 'price') value = Number.parseFloat(value);
 
-    this.setState({[name]: value});
+    this.setState({ [name]: value });
   }
 
   async componentDidMount() {
     const categories = await getCategoriesOrProducts();
 
-    this.setState({ categories: categories })
+    this.setState({ categories: categories });
   }
 
   render() {
@@ -143,15 +139,13 @@ class CreateProduct extends Component {
             name='description'
             isTextArea={true}
             type='text'
-            labelName='Product description'
+            labelName='Product description, separate features with semicolon;'
             value={this.state.description}
             handleChange={this.handleChange}
           />
           <CustomButton buttonContent='CREATE PRODUCT' type='submit' />
         </form>
-        {
-          this.state.isUploading && <Loader />
-        }
+        {this.state.isUploading && <Loader />}
       </CreateProductContainer>
     );
   }

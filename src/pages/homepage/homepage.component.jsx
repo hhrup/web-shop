@@ -1,15 +1,9 @@
 import React, { Component } from 'react';
-import { HomePageContainer } from './homepage.styles';
+import { HomePageContainer, ProductsGrid } from './homepage.styles';
 import configData from '../../helperScripts/appConfig';
-import {
-  addProductToCategory,
-  addCategoryToProductCategory,
-  getImage,
-  uploadMetadata,
-  downloadMetadata,
-  uploadImageAndGetUrl,
-} from '../../firebase/firebase.database';
-
+import {} from '../../firebase/firebase.database';
+import ProductCard from '../../components/product-card/product-card.component';
+import { getCategoriesOrProducts } from '../../firebase/firebase.database';
 
 class Homepage extends Component {
   constructor(props) {
@@ -17,51 +11,54 @@ class Homepage extends Component {
     this.imgInput = React.createRef();
     this.textInput = React.createRef();
     this.state = {
+      productCardList: [],
       imgUrl: JSON.parse(window.localStorage.getItem('imgUrl')) || '',
     }
+
+    // this.getProductsAndPopulateGrid = this.getProductsAndPopulateGrid.bind(this);
   }
 
-  componentDidMount() {
-    this.textInput.current.value = 'asdasd';
-  }
+  /*
+    TODO
+    Main screen showing products from different categories
+    choose a category and a filter then show populate the grid with data
+  */
 
+  async getProductsAndPopulateGrid() {
+    try {
+      return await getCategoriesOrProducts('gpu');
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  
+  async componentDidMount() {
+    const productList = await this.getProductsAndPopulateGrid()
+    console.log(productList);
+    const productCardList = productList.map((product) => (
+        <ProductCard
+          key={product.id}
+          imgUrl={product.imgUrl}
+          productName={product.name}
+          descriptionList={product.description}
+          price={product.price.toString()}
+        />
+    ));
+
+    this.setState({productCardList: productCardList});
+  }
+  // {
+  // this.props.currentUser.uid === configData.adminFirebaseUserId && <h3>ADMIN CONTROLS </h3>
+  // } 
 
   render() {
   return (
     <HomePageContainer>
-      <h1>Hello!</h1>
-      <h2>{this.props.currentUser.email}</h2>
-      {this.props.currentUser.uid === configData.adminFirebaseUserId ? (
-        <h3>ADMIN CONTROLS </h3>
-      ) : (
-        ''
-      )}
-      <input ref={this.imgInput} type='file' accept='image/jpeg, image/png'/>
-      <input ref={this.textInput} type='text'/>
-
-      <button onClick={() => addCategoryToProductCategory('cpu')} >ADD CATEGORY TO PRODUCT CATEGORY</button>
-
-      <button onClick={() => addProductToCategory('mbo', {
-        name: 'Intel i8',
-        price: 200,
-        imgUrl: '',
-        description: 'A very good central processing unit',
-      })} style={{display:'block'}}>ADD FIREBASE PRODUCT</button>
-
-
-      <button onClick={() => uploadImageAndGetUrl(this.imgInput.current)} style={{display:'block'}}>UPLOAD IMAGE</button>
-
-      <button onClick={uploadMetadata} style={{display:'block'}}>UPLOAD METADATA</button>
-      <button onClick={downloadMetadata} style={{display:'block'}}>GET METADATA</button>
-      <button onClick={getImage.bind(this)}>DOWNLOAD IMAGE AND SHOW IT</button>
-      <img
-        id='image'
-        src={this.state.imgUrl}
-        width='500'
-        alt='test'
-      />
-
-    </HomePageContainer>)
+      <ProductsGrid>
+        {this.state.productCardList}
+      </ProductsGrid>
+    </HomePageContainer>
+  );
   }
 }
 

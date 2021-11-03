@@ -12,7 +12,7 @@
 --- 02 COLORS
 -Primary: #495057, #7048e8
 -Tints:
--Shades: #f3f0ff
+-Shades: #f3f0ff , #d0bfff , #7950f2 , #6741d9
 -Accents:
 -Greys:
 
