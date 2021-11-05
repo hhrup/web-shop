@@ -9,7 +9,13 @@ export const HeaderContainer = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 0 1rem 0 1rem;
-  border-bottom: 1px solid;
+  // border-bottom: 1px solid;
+  position: fixed;
+  top: 0;
+  left: 0;
+  color: #fff;
+  background-color: #f3f0ff;
+  background-color: #6741d9;
 `;
 
 export const LogoContainer = styled(Link)`

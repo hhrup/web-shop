@@ -10,19 +10,19 @@ export const ProductCardContainer = styled.div`
   align-items: center;
   gap: 1rem;
   padding: 0.8rem;
-  width: 22rem;
-  height: 38rem;
+  min-width: 16rem;
+  max-width: 22rem;
+  height: 40rem;
   transition: all 0.3s;
 
   &:hover {
     border-color: #7048e8;
-    box-shadow: 0 0 1.6rem 0.8rem rgba(0, 0, 0, 0.075);
+    box-shadow: 0 0 1.6rem 0.8rem rgba(112, 72, 232, 0.1);
   }
 `;
 
 export const ProductImgContainer = styled.div`
-  width: 20rem;
-  height: 15rem;
+  width: 100%;
 `;
 
 export const ProductImg = styled.img`

@@ -1,9 +1,15 @@
 import React, { Component } from 'react';
-import { HomePageContainer, ProductsGrid } from './homepage.styles';
-import configData from '../../helperScripts/appConfig';
-import {} from '../../firebase/firebase.database';
+import {
+  HomePageContainer,
+  ProductsGrid,
+  MenuContainer,
+  MenuItem,
+  MenuTitle,
+  MenuTitleAdmin
+} from './homepage.styles';
 import ProductCard from '../../components/product-card/product-card.component';
-import { getCategoriesOrProducts } from '../../firebase/firebase.database';
+import { getCategoriesOrProducts, getCategories } from '../../firebase/firebase.database';
+import configData from '../../helperScripts/appConfig';
 
 class Homepage extends Component {
   constructor(props) {
@@ -12,30 +18,30 @@ class Homepage extends Component {
     this.textInput = React.createRef();
     this.state = {
       productCardList: [],
+      menuItemList: [],
       imgUrl: JSON.parse(window.localStorage.getItem('imgUrl')) || '',
     }
-
-    // this.getProductsAndPopulateGrid = this.getProductsAndPopulateGrid.bind(this);
   }
 
-  /*
-    TODO
-    Main screen showing products from different categories
-    choose a category and a filter then show populate the grid with data
-  */
-
-  async getProductsAndPopulateGrid() {
+  async getCategories() {
     try {
-      return await getCategoriesOrProducts('gpu');
+      return await getCategories();
     } catch (error) {
       console.error(error);
     }
   }
-  
-  async componentDidMount() {
-    const productList = await this.getProductsAndPopulateGrid()
-    console.log(productList);
-    const productCardList = productList.map((product) => (
+
+  async getProducts(category) {
+    try {
+      return await getCategoriesOrProducts(`${category}`);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async handleCategory(category) {
+    const productList = await this.getProducts(category)
+    const productCardList = productList.map(product => (
         <ProductCard
           key={product.id}
           imgUrl={product.imgUrl}
@@ -47,18 +53,42 @@ class Homepage extends Component {
 
     this.setState({productCardList: productCardList});
   }
+
+  async componentDidMount() {
+    const categoriesList = await this.getCategories();
+    const menuItemList = categoriesList.map((category, index) => (
+      <MenuItem key={index} onClick={() => this.handleCategory(category)}>{category}</MenuItem>
+    ));
+
+    this.setState({menuItemList: menuItemList});
+  }
+
   // {
   // this.props.currentUser.uid === configData.adminFirebaseUserId && <h3>ADMIN CONTROLS </h3>
-  // } 
+  // }
 
   render() {
-  return (
-    <HomePageContainer>
-      <ProductsGrid>
-        {this.state.productCardList}
-      </ProductsGrid>
-    </HomePageContainer>
-  );
+    return (
+      <HomePageContainer>
+        <MenuContainer>
+          <MenuTitle>
+          {
+            this.props.currentUser.uid === configData.adminFirebaseUserId ? 
+            <MenuTitleAdmin to='/createProduct'>Add new category +</MenuTitleAdmin>
+            : 'Categories'
+          }
+          </MenuTitle>
+          {
+            this.state.menuItemList
+          }
+        </MenuContainer>
+        <ProductsGrid>
+          {
+            this.state.productCardList
+          }
+        </ProductsGrid>
+      </HomePageContainer>
+    );
   }
 }
 

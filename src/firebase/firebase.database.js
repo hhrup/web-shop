@@ -1,6 +1,6 @@
 import { app } from './firebase.config';
-import { getFirestore, collection, getDocs, setDoc, addDoc, doc, deleteDoc } from 'firebase/firestore';
-import { getStorage, ref, uploadBytes, getDownloadURL, updateMetadata, getMetadata, list, listAll } from 'firebase/storage';
+import { getFirestore, collection, getDocs, addDoc, doc, deleteDoc, updateDoc, setDoc } from 'firebase/firestore';
+import { getStorage, ref, uploadBytes, getDownloadURL, updateMetadata, getMetadata, listAll } from 'firebase/storage';
 import { fromBlob } from 'image-resize-compress';
 
 const db = getFirestore(app);
@@ -42,6 +42,12 @@ export async function getCategoriesOrProducts(category) {
   return productsList;
 }
 
+export async function getCategories() {
+  const categorySnapshot = await getDocs(collection(db, 'productCategory'));
+  const productsList = categorySnapshot.docs.map((doc) => doc.id);
+  return productsList;
+}
+
 export async function uploadProduct(file, product) {
   try {
     let imgUrl;
@@ -64,9 +70,9 @@ export async function uploadProduct(file, product) {
 // main function used for adding products and categories. Categories are documents with collection product
 async function addProductToCategory(product) {
   try {
-    // it will implicitly create product collection
-    const docRef = await addDoc(collection(db, `productCategory/${product.category}`, 'product'), product); 
-    console.log('Product written with ID: ', docRef.id);
+    // First create a category document(setDoc) with a field inside it, so it 'exists' and we can read it (it's a Firebase "feature")
+    await setDoc(doc(db, `productCategory/${product.category}`), {documentExists: true});
+    await addDoc(collection(db, `productCategory/${product.category}`, 'product'), product);
   } catch (error) {
     console.error(error);
   }
@@ -143,7 +149,6 @@ export const downloadMetadata = async function() {
   const imgRef = ref(imagesRef, 'image01'); // image01 = image name
   try {
     const meta = await getMetadata(imgRef)
-    console.log('META: ', meta);
   } catch (error) {
     console.error(error);
   }

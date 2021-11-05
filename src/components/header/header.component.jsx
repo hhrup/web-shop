@@ -20,13 +20,10 @@ const Header = ({currentUser}) => {
       <LogoContainer to='/'>
         <Logo />
       </LogoContainer>
-      {
-        currentUser.uid === configData.adminFirebaseUserId && <CreateProductLink to='/createProduct'>CREATE PRODUCT</CreateProductLink>
-      }
       {currentUser ?
         (
           <SignUpSignIn to='#' onClick={logOut}>
-              WELCOME {currentUser.email.split('@')[0].toUpperCase()}. SIGN OUT
+              Welcome {currentUser.email.split('@')[0].toUpperCase()}. Log out
           </SignUpSignIn>
         )
         :

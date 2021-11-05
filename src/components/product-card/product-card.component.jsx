@@ -26,7 +26,7 @@ const ProductCard = ({imgUrl, productName, descriptionList, price}) => (
     </ProductImgContainer>
     <ProductName>{productName}</ProductName>
     <ProductDescriptionContainer>
-      <ProductDescriptionTitle>PRODUCT DESCRIPTION</ProductDescriptionTitle>
+      <ProductDescriptionTitle>PRODUCT DETAILS</ProductDescriptionTitle>
       <ProductDescriptionList>
       {
         createProductDescList(descriptionList)

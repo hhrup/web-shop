@@ -1,9 +1,11 @@
-WEB SITE: WEB SHOP
+React practice project
 
-BACKEND:
-    FIREBASE(AUTH, STORAGE(for images) AND FIRESTORE db)
+Web app: Web shop
 
-FRONT-END:
-    REACT,
-    REACT-ROUTER,
-    STYLED COMPONENTS
+Backend:
+    Firebase(auth, storage(for images) and firestore db)
+
+Front end:
+    React,
+    React-Router,
+    Styled Components
