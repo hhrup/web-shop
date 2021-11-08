@@ -4,7 +4,7 @@ import { ImgPreviewContainer, ImgFileNameSpan, Image, BtnAndSpanContainer } from
 
 const ImgPreview = ({buttonContent, onClick, spanContent, imgUrl}) => (
   <ImgPreviewContainer>
-    <Image src={imgUrl}/>
+    <Image src={imgUrl} alt='product image'/>
     <BtnAndSpanContainer>
       <CustomButton buttonContent={buttonContent} onClick={onClick}/>
       <ImgFileNameSpan>{spanContent}</ImgFileNameSpan>

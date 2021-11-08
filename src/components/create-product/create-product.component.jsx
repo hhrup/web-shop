@@ -7,12 +7,14 @@ import ImgPreview from '../img-preview/img-preview.component';
 import FormTitle from '../form-title/form-title.component';
 import { validateProductCreation } from '../../helperScripts/validationFunctions';
 import Loader from '../loader/loader.component';
+import { withRouter } from 'react-router';
 
 class CreateProduct extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      productId: '',
       name: '',
       description: '',
       price: 0,
@@ -24,7 +26,9 @@ class CreateProduct extends Component {
       isUploading: false,
     };
 
-    this.handleSubmit = this.handleSubmit.bind(this);
+    this.isProductUpdate = this.props.location.state ? true : false;
+
+    this.handleSubmit = this.handleSubmit.bind(this); // We could use arrow functions instead of binding it like this
     this.handleChange = this.handleChange.bind(this);
     this.handleImgPreview = this.handleImgPreview.bind(this);
   }
@@ -92,9 +96,20 @@ class CreateProduct extends Component {
   }
 
   async componentDidMount() {
-    const categories = await getCategoriesOrProducts();
-
-    this.setState({ categories: categories });
+    if (this.isProductUpdate) {
+      const {id, category, imgUrl, productName, descriptionList, price} = this.props.location.state;
+      this.setState({
+        productId: id,
+        name: productName,
+        description: descriptionList,
+        price: price,
+        category: category,
+        imgPreviewUrl: imgUrl,
+      });
+    } else {
+      const categories = await getCategoriesOrProducts('productCategories');
+      this.setState({ categories: categories });
+    }
   }
 
   render() {
@@ -143,7 +158,7 @@ class CreateProduct extends Component {
             value={this.state.description}
             handleChange={this.handleChange}
           />
-          <CustomButton buttonContent='CREATE PRODUCT' type='submit' />
+          <CustomButton buttonContent={this.isProductUpdate ? 'UPDATE PRODUCT' : 'CREATE PRODUCT'} type='submit' />
         </form>
         {this.state.isUploading && <Loader />}
       </CreateProductContainer>
@@ -151,4 +166,4 @@ class CreateProduct extends Component {
   }
 }
 
-export default CreateProduct;
+export default withRouter(CreateProduct);

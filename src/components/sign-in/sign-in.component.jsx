@@ -4,7 +4,7 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth, googleAuthProvider } from '../../firebase/firebase.auth';
 import CustomButton from '../custom-button/custom-button.component';
 import FormTitle from '../form-title/form-title.component';
-import { SignInContainer, SignInWithGoogle, Separator } from './sign-in.styles';
+import { SignInContainer, SignInWithGoogle, Separator, SignInPage } from './sign-in.styles';
 import { signInWithPopup } from 'firebase/auth';
 import { Redirect } from 'react-router';
 import { validateSignIn } from "../../helperScripts/validationFunctions";
@@ -64,34 +64,36 @@ class SignIn extends Component {
   render() {
     const { email, password } = this.state;
     return (
-      <SignInContainer>
-        <form onSubmit={this.handleSubmit}>
-          <FormTitle title='EXISTING USER' />
-          <FormInput
-            name='email'
-            type='email'
-            value={email}
-            handleChange={this.handleChange}
-            labelName='Email'
-          />
-          <FormInput
-            name='password'
-            type='password'
-            value={password}
-            handleChange={this.handleChange}
-            labelName='Password'
-          />
-          <CustomButton type='submit' buttonContent='SIGN IN' />
-        </form>
+      <SignInPage>
+        <SignInContainer>
+          <form onSubmit={this.handleSubmit}>
+            <FormTitle title='EXISTING USER' />
+            <FormInput
+              name='email'
+              type='email'
+              value={email}
+              handleChange={this.handleChange}
+              labelName='Email'
+            />
+            <FormInput
+              name='password'
+              type='password'
+              value={password}
+              handleChange={this.handleChange}
+              labelName='Password'
+            />
+            <CustomButton type='submit' buttonContent='LOG IN' />
+          </form>
 
-        <Separator>OR SIGN IN WITH:</Separator>
+          <Separator>OR SIGN IN WITH:</Separator>
 
-        <SignInWithGoogle onClick={this.signInWithGoogle} />
+          <SignInWithGoogle onClick={this.signInWithGoogle} />
 
-        {this.state.isLoading && <Loader />}
+          {this.state.isLoading && <Loader />}
 
-        {this.props.currentUser && <Redirect to='/' />}
-      </SignInContainer>
+          {this.props.currentUser && <Redirect to='/' />}
+        </SignInContainer>
+      </SignInPage>
     );
   }
 };

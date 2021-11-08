@@ -9,8 +9,14 @@ import {
   ProductDescriptionTitle,
   ProductDescriptionList,
   ProductDescriptionListItem,
-  ProductPrice
+  ProductPrice,
+  BtnCartIcon,
+  BtnEditIcon,
+  BtnDeleteIcon,
+  ControlsContainer
 } from './product-card.styles';
+import configData from '../../helperScripts/appConfig';
+import { Link } from 'react-router-dom';
 
 function createProductDescList(descriptionList) {
   if(!descriptionList) return;
@@ -19,7 +25,7 @@ function createProductDescList(descriptionList) {
   return featuresList.map((feature, index) => <ProductDescriptionListItem key={index}>{feature}</ProductDescriptionListItem>);
 }
 
-const ProductCard = ({imgUrl, productName, descriptionList, price}) => (
+const ProductCard = ({id, category, imgUrl, productName, descriptionList, price, currentUser, deleteFunc}) => (
   <ProductCardContainer>
     <ProductImgContainer>
       <ProductImg src={imgUrl} alt='Image of an product'/>
@@ -33,8 +39,21 @@ const ProductCard = ({imgUrl, productName, descriptionList, price}) => (
       }
       </ProductDescriptionList>
     </ProductDescriptionContainer>
-    <ProductPrice>{price}$</ProductPrice>
-    <CustomButton buttonContent='ADD TO CART'></CustomButton>
+    { currentUser.uid === configData.adminFirebaseUserId && <ProductPrice>{price}$</ProductPrice>}
+    {
+      currentUser.uid === configData.adminFirebaseUserId ? 
+      <ControlsContainer>
+        <CustomButton buttonContent={<BtnCartIcon />}></CustomButton>
+        <Link to={{pathname: '/createProduct', state: {id, category, imgUrl, productName, descriptionList, price}}}>
+          <CustomButton buttonContent={<BtnEditIcon />}></CustomButton>
+        </Link>
+        <CustomButton onClick={deleteFunc} buttonContent={<BtnDeleteIcon />}></CustomButton>
+      </ControlsContainer> :
+      <ControlsContainer>
+        <CustomButton buttonContent={<BtnCartIcon />}></CustomButton>
+        <ProductPrice>{price}$</ProductPrice>
+      </ControlsContainer>
+    }
   </ProductCardContainer>
 );
 

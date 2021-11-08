@@ -28,23 +28,26 @@ HOW IT WORKS WITH STORAGE:
 
 // Get an array of documents(categories), optional: get documents(products) from product collection that each category has
 export async function getCategoriesOrProducts(category) {
-  const pathToCollectionProduct = category ? `${category}/product` : '';
-  const categoryOrproductsCol = collection(db, `productCategory/${pathToCollectionProduct}`);
-  const catOrProdSnapshot = await getDocs(categoryOrproductsCol);
+  if (!category) return false;
 
-  const productsList = category ? 
-    catOrProdSnapshot.docs.map((doc) => ({
+  const pathToProductCollection = category === 'productCategories' ? '' : `${category}/product`;
+  const catsOrProdCollection = collection(db, `productCategory/${pathToProductCollection}`);
+
+  let catOrProdSnapshot;
+  try {
+    catOrProdSnapshot = await getDocs(catsOrProdCollection);
+  } catch (error) {
+    console.error(error);
+  }
+
+  const productsList = category === 'productCategories' ? 
+    catOrProdSnapshot.docs.map((doc) => doc.id)
+    :
+    (catOrProdSnapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
-    }))
-    :
-    catOrProdSnapshot.docs.map((doc) => doc.id);
-  return productsList;
-}
+    })));
 
-export async function getCategories() {
-  const categorySnapshot = await getDocs(collection(db, 'productCategory'));
-  const productsList = categorySnapshot.docs.map((doc) => doc.id);
   return productsList;
 }
 
@@ -78,13 +81,14 @@ async function addProductToCategory(product) {
   }
 }
 
-export async function deleteDocument() {
+export async function deleteDocument(documentId, productCat) {
   try {
-    await deleteDoc(doc(db, 'products', 'TyrU98sU8a4yboU0q9dE'));
+    await deleteDoc(doc(db, `productCategory/${productCat}/product`, `${documentId}`));
   } catch (e) {
     console.error('Error deleting document: ', e);
   }
 }
+
 /////////////////////////////////////////////////
 // FIREBASE CLOUD STORAGE(it's for images)///////
 /////////////////////////////////////////////////
@@ -104,7 +108,7 @@ async function uploadImageAndGetUrl(file) {
   const imgName = file.name;
   const imgRef = ref(imagesRef, imgName);
 
- // resizing and compression logic here, after we check for existing image in uploadProduct
+ // resizing and compression logic here, after we check for an existing image in uploadProduct
   const quality = 80; // quality value for webp and jpeg formats.
   const width = 800; // output width. 0 will keep its original width and 'auto' will calculate its scale from height.
   const height = 'auto'; // output height. 0 will keep its original height and 'auto' will calculate its scale from width.

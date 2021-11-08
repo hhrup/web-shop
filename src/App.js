@@ -3,10 +3,11 @@ import Header from './components/header/header.component';
 import GlobalStyle from './globalStyles';
 import { Route, Switch } from 'react-router';
 import Homepage from './pages/homepage/homepage.component';
-import SignInSignUp from './pages/sign-in-sign-up/sign-in-sign-up.component';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './firebase/firebase.auth';
 import CreateProduct from './components/create-product/create-product.component';
+import SignIn from './components/sign-in/sign-in.component';
+import SignUp from './components/sign-up/sign-up.component';
 
 class App extends Component {
   constructor(props) {
@@ -28,7 +29,7 @@ class App extends Component {
 
   render() {
     return(
-      <div className='App'>
+      <div>
         <GlobalStyle />
         <Header currentUser={this.state.currentUser}/>
         <Switch>
@@ -39,14 +40,12 @@ class App extends Component {
             <CreateProduct />
           </Route>
           <Route exact path='/signup'>
-            <SignInSignUp currentUser={this.state.currentUser}/>
+            <SignUp currentUser={this.state.currentUser}/>
+          </Route>
+          <Route exact path='/login'>
+            <SignIn currentUser={this.state.currentUser}/>
           </Route>
         </Switch>
-        {
-        //<button onClick={addDocument}>Add city</button>
-        //<button onClick={deleteDocument}>Delete city</button>
-        //<input type='file'/>
-        }
       </div>
     );
   }

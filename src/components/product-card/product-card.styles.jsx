@@ -1,5 +1,8 @@
 import styled from 'styled-components';
-import ListIcon from '../../assets/ListIcon.svg';
+import ListIcon from '../../assets/svg/listIcon.svg';
+import {ReactComponent as CartIcon} from '../../assets/svg/cartIcon.svg';
+import {ReactComponent as EditIcon} from '../../assets/svg/pencil.svg';
+import {ReactComponent as DeleteIcon} from '../../assets/svg/trash.svg';
 
 export const ProductCardContainer = styled.div`
   border: 1px solid;
@@ -63,4 +66,29 @@ export const ProductDescriptionListItem = styled.li`
 export const ProductPrice = styled.div`
   font-size: 1.6rem;
   font-weight: 600;
+`;
+
+export const BtnCartIcon = styled(CartIcon)`
+  width: 2rem;
+  padding-top: 5px;
+  color: #fff;
+`;
+
+export const BtnEditIcon = styled(EditIcon)`
+  width: 2rem;
+  padding-top: 5px;
+  color: #fff;
+`;
+
+export const BtnDeleteIcon = styled(DeleteIcon)`
+  width: 2rem;
+  padding-top: 5px;
+  color: #fff;
+`;
+
+export const ControlsContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 90%;
 `;

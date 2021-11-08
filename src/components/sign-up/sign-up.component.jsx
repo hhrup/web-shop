@@ -6,6 +6,7 @@ import { auth } from '../../firebase/firebase.auth';
 import FormTitle from '../form-title/form-title.component';
 import { Redirect } from 'react-router';
 import { validateSignUp } from '../../helperScripts/validationFunctions';
+import { SignUpPage } from './sign-up.styles';
 
 class SignUp extends Component {
   constructor(props) {
@@ -49,34 +50,34 @@ class SignUp extends Component {
   render() {
     const { email, password, confirmPassword } = this.state;
     return (
-      <form onSubmit={this.handleSubmit}>
-        <FormTitle title='NEW USER'/>
-        <FormInput
-          name='email'
-          handleChange={this.handleChange}
-          value={email}
-          type='email'
-          labelName='Email'
-        />
-        <FormInput
-          name='password'
-          handleChange={this.handleChange}
-          value={password}
-          type='password'
-          labelName='Password'
-        />
-        <FormInput
-          name='confirmPassword'
-          handleChange={this.handleChange}
-          value={confirmPassword}
-          type='password'
-          labelName='Confirm password'
-        />
-        <CustomButton type='submit' buttonContent='SIGN UP' />
-        {
-          this.props.currentUser && <Redirect to='/' />
-        }
-      </form>
+      <SignUpPage>
+        <form onSubmit={this.handleSubmit}>
+          <FormTitle title='NEW USER' />
+          <FormInput
+            name='email'
+            handleChange={this.handleChange}
+            value={email}
+            type='email'
+            labelName='Email'
+          />
+          <FormInput
+            name='password'
+            handleChange={this.handleChange}
+            value={password}
+            type='password'
+            labelName='Password'
+          />
+          <FormInput
+            name='confirmPassword'
+            handleChange={this.handleChange}
+            value={confirmPassword}
+            type='password'
+            labelName='Confirm password'
+          />
+          <CustomButton type='submit' buttonContent='SIGN UP' />
+          {this.props.currentUser && <Redirect to='/' />}
+        </form>
+      </SignUpPage>
     );
   }
 };

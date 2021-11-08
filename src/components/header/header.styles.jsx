@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { ReactComponent as Icon } from '../../assets/motherboard-svgrepo-com.svg';
+import { ReactComponent as Icon } from '../../assets/svg/motherboard-svgrepo-com.svg';
 
 export const HeaderContainer = styled.div`
   height: 6rem;
@@ -8,7 +8,7 @@ export const HeaderContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 1rem 0 1rem;
+  padding: 0 2.4rem 0 2.4rem;
   // border-bottom: 1px solid;
   position: fixed;
   top: 0;
@@ -25,17 +25,17 @@ export const LogoContainer = styled(Link)`
 
 export const Logo = styled(Icon)`
   width: 100%;
-`;
-
-export const CreateProductLink = styled(Link)`
-  text-decoration: none;
-  font-size: 1.6rem;
-  cursor: pointer;
-  color: inherit;
+  fill: #fff;
 
   &:hover {
-    color: red;
+    fill: #f3f0ff;
   }
+`;
+
+export const SignUpSignInContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 export const SignUpSignIn = styled(Link)`
@@ -45,6 +45,11 @@ export const SignUpSignIn = styled(Link)`
   color: inherit;
 
   &:hover {
-    color: red;
+    color: #f3f0ff;
   }
+`;
+
+export const LinkSeparator = styled.div`
+  font-size: 2.4rem;
+  padding: 0 1.6rem 0 1.6rem;
 `;

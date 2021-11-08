@@ -4,11 +4,11 @@ import {
   LogoContainer,
   Logo,
   SignUpSignIn,
-  CreateProductLink
+  SignUpSignInContainer,
+  LinkSeparator,
 } from './header.styles';
 import { signOut } from 'firebase/auth';
 import { auth } from '../../firebase/firebase.auth';
-import configData from '../../helperScripts/appConfig';
 
 const Header = ({currentUser}) => {
   async function logOut() {
@@ -27,7 +27,13 @@ const Header = ({currentUser}) => {
           </SignUpSignIn>
         )
         :
-        (<SignUpSignIn to='/signup'>SIGN IN</SignUpSignIn>)
+        (
+          <SignUpSignInContainer>
+            <SignUpSignIn to='/login'>Log in</SignUpSignIn> 
+            <LinkSeparator>|</LinkSeparator>
+            <SignUpSignIn to='/signup'>Sign up</SignUpSignIn>
+          </SignUpSignInContainer> 
+        )
       }
     </HeaderContainer>
   );

@@ -9,14 +9,14 @@ export const HomePageContainer = styled.div`
   column-gap: 2rem;
 `;
 
-export const ProductsGrid = styled.div`
-  display: grid;
-  padding: 2.4rem 1.6rem 2.4rem 1.6rem;
-  grid-template-columns: repeat( auto-fill, minmax(16rem, 1fr));
-  gap: 1rem;
-  justify-items: center;
-  width: 80rem;
-`;
+// export const ProductsGrid = styled.div`
+//   display: grid;
+//   padding: 2.4rem 1.6rem 2.4rem 1.6rem;
+//   grid-template-columns: repeat( auto-fill, minmax(16rem, 1fr));
+//   gap: 1rem;
+//   justify-items: center;
+//   width: 80rem;
+// `;
 
 export const MenuContainer = styled.div`
   width: 25rem;

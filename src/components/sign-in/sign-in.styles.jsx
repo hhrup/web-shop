@@ -1,5 +1,12 @@
 import styled from 'styled-components';
-import { ReactComponent as GoogleIcon } from '../../assets/Google_2015_logo.svg';
+import { ReactComponent as GoogleIcon } from '../../assets/svg/google_2015_logo.svg';
+
+export const SignInPage = styled.div`
+  margin-top: 6rem;
+  padding-top: 4.8rem;
+  display: flex;
+  justify-content: center;
+`;
 
 export const SignInContainer = styled.div`
   display: flex;
