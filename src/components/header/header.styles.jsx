@@ -1,6 +1,8 @@
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { ReactComponent as Icon } from '../../assets/svg/motherboard-svgrepo-com.svg';
+import { ReactComponent as HomeIcon } from '../../assets/svg/motherboard-svgrepo-com.svg';
+import { ReactComponent as CartIcon} from '../../assets/svg/cartIcon.svg';
+import Cart from '../../assets/svg/cartIcon.svg';
 
 export const HeaderContainer = styled.div`
   height: 6rem;
@@ -9,7 +11,6 @@ export const HeaderContainer = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 0 2.4rem 0 2.4rem;
-  // border-bottom: 1px solid;
   position: fixed;
   top: 0;
   left: 0;
@@ -18,12 +19,42 @@ export const HeaderContainer = styled.div`
   background-color: #6741d9;
 `;
 
-export const LogoContainer = styled(Link)`
+export const HomeLogoContainer = styled(Link)`
   height: 5rem;
   width: 5rem;
 `;
 
-export const Logo = styled(Icon)`
+export const HomeLogo = styled(HomeIcon)`
+  width: 100%;
+  fill: #fff;
+
+  &:hover {
+    fill: #f3f0ff;
+  }
+`;
+
+export const CartAndSignInContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 2.4rem;
+`;
+
+export const CartLogoContainer = styled(Link)`
+  height: 3.5rem;
+  width: 3.5rem;
+  position: relative;
+`;
+
+export const CartItemCount = styled.div`
+  position: absolute;
+  top: 15%;
+  left: 30%;
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: #40c057;
+`;
+
+export const CartLogo = styled(CartIcon)`
   width: 100%;
   fill: #fff;
 

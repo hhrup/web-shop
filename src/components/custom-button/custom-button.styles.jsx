@@ -10,7 +10,7 @@ export const Button = styled.button`
   transition: all 0.3s;
 
   &:hover {
-    background-color: #7950f2;
+    background-color: #40c057;
     transform: scale(1.03, 1.03);
   }
 

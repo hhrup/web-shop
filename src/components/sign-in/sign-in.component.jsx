@@ -40,19 +40,19 @@ class SignIn extends Component {
 
     if (!validateSignIn(email, password)) return;
 
+    this.setState({isLoading: true})
+
     try {
-      this.setState({isLoading: true})
       await signInWithEmailAndPassword(auth, email, password);
     } catch (error) {
       alert(error);
       console.error(error);
+      this.setState({
+        email: '',
+        password: '',
+        isLoading: false
+      });
     }
-
-    this.setState({
-      email: '',
-      password: '',
-      isLoading: false
-    });
   }
 
   handleChange(e) {

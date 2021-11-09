@@ -19,7 +19,7 @@ export const ProductCardContainer = styled.div`
   transition: all 0.3s;
 
   &:hover {
-    border-color: #7048e8;
+    border-color: #40c057;
     box-shadow: 0 0 1.6rem 0.8rem rgba(112, 72, 232, 0.1);
   }
 `;

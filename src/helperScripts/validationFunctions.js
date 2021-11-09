@@ -29,10 +29,12 @@ export function validateSignUp(email, password, confirmPassword) {
   return true;
 }
 
-export function validateProductCreation(file, product) {
+export function validateProductCreation(file, product, imgUrl) {
   if (!file) {
-    alert('Choose an image for upload.');
-    return false;
+    if(!imgUrl) {
+      alert('Choose an image for upload.');
+      return false;
+    }
   }
   if (!product.name) {
     alert('Product name field is empty');

@@ -10,7 +10,7 @@
 - Letter spacing: 0.5px, 0.75px
 
 --- 02 COLORS
--Primary: #495057, #7048e8
+-Primary: #495057, #7048e8, #40c057
 -Tints:
 -Shades: #f3f0ff , #d0bfff , #7950f2 , #6741d9
 -Accents:

@@ -51,20 +51,28 @@ export async function getCategoriesOrProducts(category) {
   return productsList;
 }
 
-export async function uploadProduct(file, product) {
+export async function uploadProduct(file, product, isProductUpdate, productId, existingImgUrl) {
   try {
     let imgUrl;
     // doesImgExists = function: if img already exists in storage return URL without uploading the image, else upload the img
-    const doesImgExists = await checkForImgWithTheSameNameInStorage(file.name);
-    if (!doesImgExists) {
-      imgUrl = await uploadImageAndGetUrl(file);
+    if(!existingImgUrl){
+      const doesImgExists = await checkForImgWithTheSameNameInStorage(file.name);
+      if (!doesImgExists) {
+        imgUrl = await uploadImageAndGetUrl(file);
+      } else {
+        imgUrl = doesImgExists;
+      }
     } else {
-      imgUrl = doesImgExists;
+      imgUrl = existingImgUrl;
     }
 
     product.imgUrl = imgUrl;
 
-    await addProductToCategory(product);
+    if (isProductUpdate) {
+      await updateProduct(product, productId);
+    } else {
+      await addProductToCategory(product);
+    }
   } catch (error) {
     console.error(error);
   }
@@ -76,6 +84,15 @@ async function addProductToCategory(product) {
     // First create a category document(setDoc) with a field inside it, so it 'exists' and we can read it (it's a Firebase "feature")
     await setDoc(doc(db, `productCategory/${product.category}`), {documentExists: true});
     await addDoc(collection(db, `productCategory/${product.category}`, 'product'), product);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+async function updateProduct(product, productId) {
+  try {
+    const productRef = doc(db, `productCategory/${product.category}/product`, `${productId}`);
+    await updateDoc(productRef, product);
   } catch (error) {
     console.error(error);
   }

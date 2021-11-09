@@ -1,11 +1,15 @@
 import React from 'react';
 import {
   HeaderContainer,
-  LogoContainer,
-  Logo,
+  HomeLogoContainer,
+  HomeLogo,
   SignUpSignIn,
   SignUpSignInContainer,
   LinkSeparator,
+  CartLogoContainer,
+  CartLogo,
+  CartAndSignInContainer,
+  CartItemCount
 } from './header.styles';
 import { signOut } from 'firebase/auth';
 import { auth } from '../../firebase/firebase.auth';
@@ -17,24 +21,30 @@ const Header = ({currentUser}) => {
 
   return (
     <HeaderContainer>
-      <LogoContainer to='/'>
-        <Logo />
-      </LogoContainer>
-      {currentUser ?
-        (
-          <SignUpSignIn to='#' onClick={logOut}>
-              Welcome {currentUser.email.split('@')[0].toUpperCase()}. Log out
-          </SignUpSignIn>
-        )
-        :
-        (
-          <SignUpSignInContainer>
-            <SignUpSignIn to='/login'>Log in</SignUpSignIn> 
-            <LinkSeparator>|</LinkSeparator>
-            <SignUpSignIn to='/signup'>Sign up</SignUpSignIn>
-          </SignUpSignInContainer> 
-        )
-      }
+      <HomeLogoContainer to='/'>
+        <HomeLogo />
+      </HomeLogoContainer>
+      <CartAndSignInContainer>
+        <CartLogoContainer to=''>
+          <CartItemCount>10</CartItemCount>
+          <CartLogo />
+        </CartLogoContainer>
+        {currentUser ?
+          (
+            <SignUpSignIn to='#' onClick={logOut}>
+                Welcome {currentUser.email.split('@')[0].toUpperCase()}. Log out
+            </SignUpSignIn>
+          )
+          :
+          (
+            <SignUpSignInContainer>
+              <SignUpSignIn to='/login'>Log in</SignUpSignIn> 
+              <LinkSeparator>|</LinkSeparator>
+              <SignUpSignIn to='/signup'>Sign up</SignUpSignIn>
+            </SignUpSignInContainer> 
+          )
+        }
+      </CartAndSignInContainer>
     </HeaderContainer>
   );
 }

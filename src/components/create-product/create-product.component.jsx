@@ -24,6 +24,7 @@ class CreateProduct extends Component {
       imgName: '',
       file: undefined,
       isUploading: false,
+      existingImgUrl: '',
     };
 
     this.isProductUpdate = this.props.location.state ? true : false;
@@ -44,10 +45,11 @@ class CreateProduct extends Component {
     };
     const file = this.state.file;
 
-    if (!validateProductCreation(file, product)) return;
+    if (!validateProductCreation(file, product, this.state.existingImgUrl)) return;
     this.setState({ isUploading: true });
 
-    await uploadProduct(file, product);
+    await uploadProduct(file, product, this.isProductUpdate, this.state.productId, this.state.existingImgUrl); 
+    // TODO add here update method and condition it with this.isProductUpdate; try catch, and maybe message about successful upload
 
     this.setState({
       file: undefined,
@@ -105,6 +107,7 @@ class CreateProduct extends Component {
         price: price,
         category: category,
         imgPreviewUrl: imgUrl,
+        existingImgUrl: imgUrl,
       });
     } else {
       const categories = await getCategoriesOrProducts('productCategories');
