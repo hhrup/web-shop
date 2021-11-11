@@ -2,7 +2,6 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { ReactComponent as HomeIcon } from '../../assets/svg/motherboard-svgrepo-com.svg';
 import { ReactComponent as CartIcon} from '../../assets/svg/cartIcon.svg';
-import Cart from '../../assets/svg/cartIcon.svg';
 
 export const HeaderContainer = styled.div`
   height: 6rem;
@@ -15,7 +14,6 @@ export const HeaderContainer = styled.div`
   top: 0;
   left: 0;
   color: #fff;
-  background-color: #f3f0ff;
   background-color: #6741d9;
 `;
 
@@ -47,7 +45,7 @@ export const CartLogoContainer = styled(Link)`
 
 export const CartItemCount = styled.div`
   position: absolute;
-  top: 15%;
+  top: 20%;
   left: 30%;
   font-size: 1.4rem;
   font-weight: 500;

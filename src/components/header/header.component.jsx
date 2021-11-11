@@ -14,7 +14,7 @@ import {
 import { signOut } from 'firebase/auth';
 import { auth } from '../../firebase/firebase.auth';
 
-const Header = ({currentUser}) => {
+const Header = props => {
   async function logOut() {
     await signOut(auth);
   }
@@ -25,14 +25,14 @@ const Header = ({currentUser}) => {
         <HomeLogo />
       </HomeLogoContainer>
       <CartAndSignInContainer>
-        <CartLogoContainer to=''>
-          <CartItemCount>10</CartItemCount>
+        <CartLogoContainer to='/checkout'>
+          <CartItemCount>{props.numberOfCartItems}</CartItemCount>
           <CartLogo />
         </CartLogoContainer>
-        {currentUser ?
+        {props.currentUser ?
           (
             <SignUpSignIn to='#' onClick={logOut}>
-                Welcome {currentUser.email.split('@')[0].toUpperCase()}. Log out
+                Welcome {props.currentUser.email.split('@')[0].toUpperCase()}. Log out
             </SignUpSignIn>
           )
           :
@@ -48,8 +48,5 @@ const Header = ({currentUser}) => {
     </HeaderContainer>
   );
 }
-
-// <button onClick={this.logOut}>SIGN OUT</button>
-// <button onClick={this.getCurrentUser}>getCurrentUser</button>
 
 export default Header;

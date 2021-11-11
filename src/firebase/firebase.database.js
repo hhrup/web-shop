@@ -1,6 +1,6 @@
 import { app } from './firebase.config';
 import { getFirestore, collection, getDocs, addDoc, doc, deleteDoc, updateDoc, setDoc } from 'firebase/firestore';
-import { getStorage, ref, uploadBytes, getDownloadURL, updateMetadata, getMetadata, listAll } from 'firebase/storage';
+import { getStorage, ref, uploadBytes, getDownloadURL, updateMetadata, listAll } from 'firebase/storage';
 import { fromBlob } from 'image-resize-compress';
 
 const db = getFirestore(app);
@@ -159,17 +159,6 @@ async function checkForImgWithTheSameNameInStorage(imgName) {
 
     const url = await getDownloadURL(ref(storage, imgArr[0].fullPath));
     return url;
-  } catch (error) {
-    console.error(error);
-  }
-}
-
-// TODO probably not going to be used, delete later
-export const downloadMetadata = async function() {
-  const imagesRef = ref(storageRef, 'images'); // reference(path) to an folder: images
-  const imgRef = ref(imagesRef, 'image01'); // image01 = image name
-  try {
-    const meta = await getMetadata(imgRef)
   } catch (error) {
     console.error(error);
   }

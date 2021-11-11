@@ -20,12 +20,11 @@ import { Link } from 'react-router-dom';
 
 function createProductDescList(descriptionList) {
   if(!descriptionList) return;
-
   const featuresList = descriptionList.split(';');
   return featuresList.map((feature, index) => <ProductDescriptionListItem key={index}>{feature}</ProductDescriptionListItem>);
 }
 
-const ProductCard = ({id, category, imgUrl, productName, descriptionList, price, currentUser, deleteFunc}) => (
+const ProductCard = ({id, category, imgUrl, productName, descriptionList, price, currentUser, deleteFunc, addToCart, isCheckout}) => (
   <ProductCardContainer>
     <ProductImgContainer>
       <ProductImg src={imgUrl} alt='Image of an product'/>
@@ -39,20 +38,24 @@ const ProductCard = ({id, category, imgUrl, productName, descriptionList, price,
       }
       </ProductDescriptionList>
     </ProductDescriptionContainer>
-    { currentUser.uid === configData.adminFirebaseUserId && <ProductPrice>{price}$</ProductPrice>}
+    { currentUser.uid === configData.adminFirebaseUserId && !isCheckout && <ProductPrice>{price}$</ProductPrice>}
+    { isCheckout && <ProductPrice>{price}$</ProductPrice>}
     {
-      currentUser.uid === configData.adminFirebaseUserId ? 
+      currentUser.uid === configData.adminFirebaseUserId && !isCheckout &&
       <ControlsContainer>
-        <CustomButton buttonContent={<BtnCartIcon />}></CustomButton>
+        <CustomButton onClick={addToCart} buttonContent={<BtnCartIcon />} />
         <Link to={{pathname: '/createProduct', state: {id, category, imgUrl, productName, descriptionList, price}}}>
-          <CustomButton buttonContent={<BtnEditIcon />}></CustomButton>
+          <CustomButton buttonContent={<BtnEditIcon />} />
         </Link>
-        <CustomButton onClick={deleteFunc} buttonContent={<BtnDeleteIcon />}></CustomButton>
-      </ControlsContainer> :
-      <ControlsContainer>
-        <CustomButton buttonContent={<BtnCartIcon />}></CustomButton>
-        <ProductPrice>{price}$</ProductPrice>
+        <CustomButton onClick={deleteFunc} buttonContent={<BtnDeleteIcon />} />
       </ControlsContainer>
+    }
+    {
+      currentUser.uid === configData.adminFirebaseUserId || isCheckout ||
+        <ControlsContainer>
+          <CustomButton onClick={addToCart} buttonContent={<BtnCartIcon />} />
+          <ProductPrice>{price}$</ProductPrice>
+        </ControlsContainer>
     }
   </ProductCardContainer>
 );

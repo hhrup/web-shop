@@ -33,6 +33,15 @@ class ProductsGrid extends Component {
           price={product.price.toString()}
           currentUser={this.props.currentUser}
           deleteFunc={() => this.deleteDoc(product.id, product.category)}
+          addToCart={
+            () => this.props.addToCart({
+              id: product.id,
+              category: product.category,
+              imgUrl: product.imgUrl,
+              productName: product.name,
+              descriptionList: product.description,
+              price: product.price.toString()
+            })}
         />
     ));
 

@@ -15,13 +15,13 @@ class Homepage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      productCardList: [],
       menuItemList: [],
-      currentCategory: '',
+      currentCategory: localStorage.getItem('currentCategory') || '',
     }
   }
 
   setStateProductsGrid(category) {
+    localStorage.setItem('currentCategory', category)
     this.setState({currentCategory: category});
   }
 
@@ -48,7 +48,7 @@ class Homepage extends Component {
             this.state.menuItemList
           }
         </MenuContainer>
-        <ProductsGrid category={this.state.currentCategory} currentUser={this.props.currentUser}/>
+        <ProductsGrid category={this.state.currentCategory} currentUser={this.props.currentUser} addToCart={this.props.addToCart}/>
       </HomePageContainer>
     );
   }
