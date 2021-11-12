@@ -6,7 +6,12 @@ export const HomePageContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  column-gap: 2rem;
+  column-gap: 2.4rem;
+  padding: 0 1.6rem;
+
+  @media only screen and (max-width: 600px) {
+    flex-direction: column;
+  }
 `;
 
 export const MenuContainer = styled.div`

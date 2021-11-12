@@ -26,7 +26,7 @@ const CheckoutPage = ({cartItems, currentUser}) => {
       </CheckoutGrid>
       <TakeMoneyContainer>
         <ProductPrice>Total: {cartItems.reduce((prevValue, currentValue) => prevValue + Number.parseFloat(currentValue.price), 0)}$</ProductPrice>
-        <CustomButton onClick={localStorage.clear()} buttonContent='PAY NOW'/> button clears local storage
+        <CustomButton onClick={() => {localStorage.removeItem('cartItems'); localStorage.removeItem('numberOfCartItems');}} buttonContent='PAY NOW'/> button clears local storage
       </TakeMoneyContainer>
     </CheckoutContainer>
   );
