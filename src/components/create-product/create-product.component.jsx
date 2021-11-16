@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import { CreateProductContainer } from './create-product.styles';
 import FormInput from '../form-input/form-input.component';
 import { getCategoriesOrProducts, uploadProduct } from '../../firebase/firebase.database';
@@ -9,49 +9,40 @@ import { validateProductCreation } from '../../helperScripts/validationFunctions
 import Loader from '../loader/loader.component';
 import { withRouter } from 'react-router';
 
-class CreateProduct extends Component {
-  constructor(props) {
-    super(props);
+function CreateProduct(props) {
+  const isProductUpdate = props.location.state;
 
-    this.state = {
-      productId: '',
-      name: '',
-      description: '',
-      price: 0,
-      category: '',
-      categories: '',
-      imgPreviewUrl: '',
-      imgName: '',
-      file: undefined,
-      isUploading: false,
-      existingImgUrl: '',
-    };
+  const [stateObject, setStateObject] = useState({
+    productId: '',
+    name: '',
+    description: '',
+    price: 0,
+    category: '',
+    categories: '',
+    imgPreviewUrl: '',
+    imgName: '',
+    file: undefined,
+    isUploading: false,
+    existingImgUrl: '',
+  });
 
-    this.isProductUpdate = this.props.location.state ? true : false;
-
-    this.handleSubmit = this.handleSubmit.bind(this); // We could use arrow functions instead of binding it like this
-    this.handleChange = this.handleChange.bind(this);
-    this.handleImgPreview = this.handleImgPreview.bind(this);
-  }
-
-  async handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
 
     const product = {
-      name: this.state.name.trim(),
-      category: this.state.category.trim(),
-      description: this.state.description.trim(),
-      price: this.state.price,
+      name: stateObject.name.trim(),
+      category: stateObject.category.trim(),
+      description: stateObject.description.trim(),
+      price: stateObject.price,
     };
-    const file = this.state.file;
+    const file = stateObject.file;
 
-    if (!validateProductCreation(file, product, this.state.existingImgUrl)) return;
-    this.setState({ isUploading: true });
+    if (!validateProductCreation(file, product, stateObject.existingImgUrl)) return;
+    setStateObject({ ...stateObject, isUploading: true })
 
-    await uploadProduct(file, product, this.isProductUpdate, this.state.productId, this.state.existingImgUrl); 
-    // TODO add here update method and condition it with this.isProductUpdate; try catch, and maybe message about successful upload
+    await uploadProduct(file, product, isProductUpdate, stateObject.productId, stateObject.existingImgUrl); 
 
-    this.setState({
+    setStateObject({
       file: undefined,
       imgPreviewUrl: '',
       imgName: '',
@@ -63,44 +54,48 @@ class CreateProduct extends Component {
     });
   }
 
-  previewImage(file) {
+  function previewImage(file) {
     if (file) {
       const fr = new FileReader();
 
       fr.addEventListener('load', (e) => {
-        this.setState({ imgPreviewUrl: e.target.result, file: file });
+        setStateObject({ 
+          ...stateObject,
+          imgPreviewUrl: e.target.result,
+          file: file })
       });
-      fr.readAsDataURL(file); // starts reading the file, load event fired when read completes successfully
+      fr.readAsDataURL(file); // starts reading the file, load event(see event listener above) fired when read completes successfully
     }
   }
 
-  async handleImgPreview(e) {
+  async function handleImgPreview(e) {
     e.preventDefault();
     try {
       const [fileHandle] = await window.showOpenFilePicker();
 
       if (fileHandle && fileHandle.kind === 'file') {
         const file = await fileHandle.getFile();
-        this.setState({ imgName: file.name });
-        this.previewImage(file);
+        setStateObject({ ...stateObject, imgName: file.name });
+        previewImage(file);
       }
     } catch (error) {
       console.error(console.error(error));
     }
   }
 
-  handleChange(e) {
+  function handleChange(e) {
     let { name, value } = e.target;
 
     if (name === 'price') value = Number.parseFloat(value);
 
-    this.setState({ [name]: value });
+    setStateObject({ ...stateObject, [name]: value });
   }
 
-  async componentDidMount() {
-    if (this.isProductUpdate) {
-      const {id, category, imgUrl, productName, descriptionList, price} = this.props.location.state;
-      this.setState({
+  useEffect(() => {
+    if (isProductUpdate) {
+      const {id, category, imgUrl, productName, descriptionList, price} = props.location.state;
+      setStateObject({
+        ...stateObject,
         productId: id,
         name: productName,
         description: descriptionList,
@@ -110,63 +105,63 @@ class CreateProduct extends Component {
         existingImgUrl: imgUrl,
       });
     } else {
-      const categories = await getCategoriesOrProducts('productCategories');
-      this.setState({ categories: categories });
+      (async function() {
+        const categories = await getCategoriesOrProducts('productCategories');
+        setStateObject({ ...stateObject, categories: categories });
+      })()
     }
-  }
+  }, [])
 
-  render() {
-    return (
-      <CreateProductContainer>
-        <FormTitle title='Create and upload the product' />
-        <form onSubmit={this.handleSubmit}>
-          <ImgPreview
-            buttonContent='Choose an image'
-            spanContent={this.state.imgName}
-            onClick={this.handleImgPreview}
-            imgUrl={this.state.imgPreviewUrl}
-          />
+  return (
+    <CreateProductContainer>
+      <FormTitle title='Create and upload the product' />
+      <form onSubmit={handleSubmit}>
+        <ImgPreview
+          buttonContent='Choose an image'
+          spanContent={stateObject.imgName}
+          onClick={handleImgPreview}
+          imgUrl={stateObject.imgPreviewUrl}
+        />
 
-          <FormInput
-            name='name'
-            value={this.state.name}
-            type='text'
-            labelName='Product name'
-            handleChange={this.handleChange}
-          />
+        <FormInput
+          name='name'
+          value={stateObject.name}
+          type='text'
+          labelName='Product name'
+          handleChange={handleChange}
+        />
 
-          <FormInput
-            isDataList={true}
-            options={this.state.categories}
-            name='category'
-            value={this.state.category}
-            type='text'
-            labelName='Select existing category or type in a new one'
-            handleChange={this.handleChange}
-          />
+        <FormInput
+          isDataList={true}
+          options={stateObject.categories}
+          name='category'
+          value={stateObject.category}
+          type='text'
+          labelName='Select existing category or type in a new one'
+          handleChange={handleChange}
+        />
 
-          <FormInput
-            name='price'
-            value={this.state.price}
-            type='text'
-            labelName='Product price'
-            handleChange={this.handleChange}
-          />
+        <FormInput
+          name='price'
+          value={stateObject.price}
+          type='text'
+          labelName='Product price'
+          handleChange={handleChange}
+        />
 
-          <FormInput
-            name='description'
-            isTextArea={true}
-            type='text'
-            labelName='Product description, separate features with semicolon;'
-            value={this.state.description}
-            handleChange={this.handleChange}
-          />
-          <CustomButton buttonContent={this.isProductUpdate ? 'UPDATE PRODUCT' : 'CREATE PRODUCT'} type='submit' />
-        </form>
-        {this.state.isUploading && <Loader />}
-      </CreateProductContainer>
-    );
-  }
+        <FormInput
+          name='description'
+          isTextArea={true}
+          type='text'
+          labelName='Product description, separate features with semicolon;'
+          value={stateObject.description}
+          handleChange={handleChange}
+        />
+        <CustomButton buttonContent={isProductUpdate ? 'UPDATE PRODUCT' : 'CREATE PRODUCT'} type='submit' />
+      </form>
+      {stateObject.isUploading && <Loader />}
+    </CreateProductContainer>
+  );
 }
 
 export default withRouter(CreateProduct);

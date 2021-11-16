@@ -38,10 +38,10 @@ const ProductCard = ({id, category, imgUrl, productName, descriptionList, price,
       }
       </ProductDescriptionList>
     </ProductDescriptionContainer>
-    { currentUser.uid === configData.adminFirebaseUserId && !isCheckout && <ProductPrice>{price}$</ProductPrice>}
+    { currentUser?.uid === configData.adminFirebaseUserId && !isCheckout && <ProductPrice>{price}$</ProductPrice>}
     { isCheckout && <ProductPrice>{price}$</ProductPrice>}
     {
-      currentUser.uid === configData.adminFirebaseUserId && !isCheckout &&
+      currentUser?.uid === configData.adminFirebaseUserId && !isCheckout &&
       <ControlsContainer>
         <CustomButton onClick={addToCart} buttonContent={<BtnCartIcon />} />
         <Link to={{pathname: '/createProduct', state: {id, category, imgUrl, productName, descriptionList, price}}}>
@@ -51,7 +51,7 @@ const ProductCard = ({id, category, imgUrl, productName, descriptionList, price,
       </ControlsContainer>
     }
     {
-      currentUser.uid === configData.adminFirebaseUserId || isCheckout ||
+      currentUser?.uid === configData.adminFirebaseUserId || isCheckout ||
         <ControlsContainer>
           <CustomButton onClick={addToCart} buttonContent={<BtnCartIcon />} />
           <ProductPrice>{price}$</ProductPrice>

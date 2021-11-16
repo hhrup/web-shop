@@ -1,7 +1,6 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   HomePageContainer,
-  // ProductsGrid,
   MenuContainer,
   MenuItem,
   MenuTitle,
@@ -11,47 +10,48 @@ import { getCategoriesOrProducts } from '../../firebase/firebase.database';
 import configData from '../../helperScripts/appConfig';
 import ProductsGrid from '../../components/products-grid/products-grid.component';
 
-class Homepage extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      menuItemList: [],
-      currentCategory: localStorage.getItem('currentCategory') || '',
-    }
+function Homepage(props) {
+  const [menuItemList, setMenuItemList] = useState([]);
+  const [currentCategory, setCurrentCategory] = useState(localStorage.getItem('currentCategory') || '');
+
+  function setStateProductsGrid(category) {
+      localStorage.setItem('currentCategory', category)
+      setCurrentCategory(category);
   }
 
-  setStateProductsGrid(category) {
-    localStorage.setItem('currentCategory', category)
-    this.setState({currentCategory: category});
-  }
-
-  async componentDidMount() {
+  async function menuSetup() {
     const categoriesList = await getCategoriesOrProducts('productCategories');
     const menuItemList = categoriesList.map((category, index) => (
-      <MenuItem key={index} onClick={() => this.setStateProductsGrid(category)}>{category}</MenuItem>
+    <MenuItem key={index} onClick={() => setStateProductsGrid(category)}>{category}</MenuItem>
     ));
-    this.setState({menuItemList: menuItemList});
+    setMenuItemList([...menuItemList]);
   }
 
-  render() {
-    return (
-      <HomePageContainer>
-        <MenuContainer>
-          <MenuTitle>
+  useEffect(() => {
+    menuSetup();
+  }, []);
+
+  return (
+    <HomePageContainer>
+      <MenuContainer>
+        <MenuTitle>
           {
-            this.props.currentUser.uid === configData.adminFirebaseUserId ? 
+            props.currentUser.uid === configData.adminFirebaseUserId ? 
             <MenuTitleAdmin to='/createProduct'>Add new product +</MenuTitleAdmin>
             : 'Categories'
           }
-          </MenuTitle>
+        </MenuTitle>
           {
-            this.state.menuItemList
+            menuItemList
           }
-        </MenuContainer>
-        <ProductsGrid category={this.state.currentCategory} currentUser={this.props.currentUser} addToCart={this.props.addToCart}/>
-      </HomePageContainer>
-    );
-  }
+      </MenuContainer>
+      <ProductsGrid 
+        category={currentCategory}
+        currentUser={props.currentUser}
+        addToCart={props.addToCart}
+        />
+    </HomePageContainer>
+  );
 }
 
 export default Homepage;

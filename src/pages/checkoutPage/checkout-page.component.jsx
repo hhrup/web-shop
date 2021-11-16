@@ -1,22 +1,28 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { CheckoutContainer, CheckoutGrid, Title, TakeMoneyContainer, ProductPrice } from './checkout-page.styles';
 import ProductCard from '../../components/product-card/product-card.component';
 import CustomButton from '../../components/custom-button/custom-button.component';
 
-const CheckoutPage = ({cartItems, currentUser}) => {
-  const productCardList = cartItems.map(product => (
-    <ProductCard
-      key={product.id}
-      id={product.id}
-      category={product.category}
-      imgUrl={product.imgUrl}
-      productName={product.name}
-      descriptionList={product.descriptionList}
-      price={product.price}
-      isCheckout={true}
-      currentUser={currentUser}
-    />
-  ));
+function CheckoutPage({cartItems, clearCart}) {
+  const [productCardList, setProductCardList] = useState([]);
+  const [totalPrice, setTotalPrice] = useState(0);
+
+    useEffect(() => {
+      setProductCardList(cartItems.map(product => (
+        <ProductCard
+          key={product.id}
+          id={product.id}
+          category={product.category}
+          imgUrl={product.imgUrl}
+          productName={product.name}
+          descriptionList={product.descriptionList}
+          price={product.price}
+          isCheckout={true}
+        />
+      )));
+
+      setTotalPrice(cartItems.reduce((prevValue, currentValue) => prevValue + Number.parseFloat(currentValue.price), 0));
+    }, [cartItems]);
 
   return (
     <CheckoutContainer>
@@ -25,8 +31,17 @@ const CheckoutPage = ({cartItems, currentUser}) => {
         {productCardList}
       </CheckoutGrid>
       <TakeMoneyContainer>
-        <ProductPrice>Total: {cartItems.reduce((prevValue, currentValue) => prevValue + Number.parseFloat(currentValue.price), 0)}$</ProductPrice>
-        <CustomButton onClick={() => {localStorage.removeItem('cartItems'); localStorage.removeItem('numberOfCartItems');}} buttonContent='PAY NOW'/> button clears local storage
+        <ProductPrice>
+          Total: {totalPrice}$
+        </ProductPrice>
+        <CustomButton onClick={
+          () => {
+            localStorage.removeItem('cartItems');
+            localStorage.removeItem('numberOfCartItems');
+            clearCart();
+            setProductCardList([]);
+            setTotalPrice(0);
+          }} buttonContent='PAY NOW'/> button clears local storage and cart
       </TakeMoneyContainer>
     </CheckoutContainer>
   );

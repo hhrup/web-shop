@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from './components/header/header.component';
 import GlobalStyle from './globalStyles';
 import { Route, Switch } from 'react-router';
@@ -10,71 +10,68 @@ import SignIn from './components/sign-in/sign-in.component';
 import SignUp from './components/sign-up/sign-up.component';
 import CheckoutPage from './pages/checkoutPage/checkout-page.component';
 
-class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      currentUser: '',
-      cartItems: JSON.parse(localStorage.getItem('cartItems')) || [],
-      numberOfCartItems: Number.parseInt(localStorage.getItem('numberOfCartItems')) || 0,
-    }
+function App(props) {
+  const [currentUser, setCurrentUser] = useState('');
+  const [cartState, setCartState] = useState({
+    cartItems: JSON.parse(localStorage.getItem('cartItems')) || [],
+    numberOfCartItems: Number.parseInt(localStorage.getItem('numberOfCartItems')) || 0,
+  });
 
-    this.addToCart = this.addToCart.bind(this);
-  }
-
-  addToCart(product) {
+  function addToCart(product) {
     let newCartItems;
-    if (!this.state.cartItems.find(element => element.id === product.id))
-      newCartItems = [...this.state.cartItems, product];
+    if (!cartState.cartItems.find(element => element.id === product.id))
+      newCartItems = [...cartState.cartItems, product];
     else {
-      newCartItems = this.state.cartItems;
+      newCartItems = cartState.cartItems;
       alert('Product already in cart!');
     }
 
-    const newNumberOfCartItems = newCartItems?.length || this.state.cartItems.length;
+    const newNumberOfCartItems = newCartItems?.length || cartState.cartItems.length;
 
     localStorage.setItem('cartItems', JSON.stringify(newCartItems));
     localStorage.setItem('numberOfCartItems', newNumberOfCartItems);
 
-    if(newCartItems.length !== this.state.cartItems)
-      this.setState( { cartItems: newCartItems, numberOfCartItems: newNumberOfCartItems});
+    if(newCartItems.length !== cartState.cartItems)
+      setCartState({ cartItems: newCartItems, numberOfCartItems: newNumberOfCartItems});
+  };
+
+  function clearCart() {
+    setCartState({ cartItems: [], numberOfCartItems: 0});
   }
 
-  componentDidMount() {
+  useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        this.setState({currentUser: user});
+        setCurrentUser(user);
       } else {
-        this.setState({currentUser: ''});
+        setCurrentUser('');
       }
     });
-  }
+  }, []);
 
-  render() {
-    return(
-      <div>
-        <GlobalStyle />
-        <Header currentUser={this.state.currentUser} numberOfCartItems={this.state.numberOfCartItems}/>
-        <Switch>
-          <Route exact path='/' >
-            <Homepage currentUser={this.state.currentUser} addToCart={this.addToCart}/>
-          </Route>
-          <Route exact path='/createProduct'>
-            <CreateProduct />
-          </Route>
-          <Route exact path='/signup'>
-            <SignUp currentUser={this.state.currentUser}/>
-          </Route>
-          <Route exact path='/login'>
-            <SignIn currentUser={this.state.currentUser}/>
-          </Route>
-          <Route exact path='/checkout'>
-            <CheckoutPage cartItems={this.state.cartItems} currentUser={this.state.currentUser}/>
-          </Route>
-        </Switch>
-      </div>
-    );
-  }
+  return(
+    <div>
+      <GlobalStyle />
+      <Header currentUser={currentUser} numberOfCartItems={cartState.numberOfCartItems}/>
+      <Switch>
+        <Route exact path='/' >
+          <Homepage currentUser={currentUser} addToCart={addToCart}/>
+        </Route>
+        <Route exact path='/createProduct'>
+          <CreateProduct />
+        </Route>
+        <Route exact path='/signup'>
+          <SignUp currentUser={currentUser}/>
+        </Route>
+        <Route exact path='/login'>
+          <SignIn currentUser={currentUser}/>
+        </Route>
+        <Route exact path='/checkout'>
+          <CheckoutPage cartItems={cartState.cartItems} currentUser={currentUser} clearCart={clearCart}/>
+        </Route>
+      </Switch>
+    </div>
+  );
 }
 
 export default App;

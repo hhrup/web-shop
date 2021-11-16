@@ -1,4 +1,4 @@
-import React, {Component} from "react";
+import React, { useState } from "react";
 import FormInput from "../form-input/form-input.component";
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth, googleAuthProvider } from '../../firebase/firebase.auth';
@@ -10,92 +10,77 @@ import { Redirect } from 'react-router';
 import { validateSignIn } from "../../helperScripts/validationFunctions";
 import Loader from "../loader/loader.component";
 
-class SignIn extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      email: '',
-      password: '',
-      currentUser: props.currentUser,
-      isLoading: false,
-    }
+function SignIn(props) {
+  const [userData, setUserData] = useState({
+    email: '',
+    password: '',
+    currentUser: props.currentUser,
+    isLoading: false,
+  });
 
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.signInWithGoogle = this.signInWithGoogle.bind(this);
-  }
-
-  signInWithGoogle= async () => {
+  async function signInWithGoogle() {
     try {
-      const result = await signInWithPopup(auth, googleAuthProvider);
-      console.log(result);
+      await signInWithPopup(auth, googleAuthProvider);
     } catch (error) {
       console.error(error);
     }
   }
 
-  handleSubmit= async e => {
+  async function handleSubmit(e) {
     e.preventDefault();
-    const { email, password } = this.state;
+    const { email, password } = userData;
 
     if (!validateSignIn(email, password)) return;
 
-    this.setState({isLoading: true})
+    setUserData({...userData, isLoading: true})
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
     } catch (error) {
       alert(error);
       console.error(error);
-      this.setState({
-        email: '',
-        password: '',
-        isLoading: false
-      });
     }
   }
 
-  handleChange(e) {
+  function handleChange(e) {
     const { name, value } = e.target;
 
-    this.setState({ [name]: value });
+    setUserData({...userData, [name]: value});
   }
 
-  render() {
-    const { email, password } = this.state;
-    return (
-      <SignInPage>
-        <SignInContainer>
-          <form onSubmit={this.handleSubmit}>
-            <FormTitle title='EXISTING USER' />
-            <FormInput
-              name='email'
-              type='email'
-              value={email}
-              handleChange={this.handleChange}
-              labelName='Email'
-            />
-            <FormInput
-              name='password'
-              type='password'
-              value={password}
-              handleChange={this.handleChange}
-              labelName='Password'
-            />
-            <CustomButton type='submit' buttonContent='LOG IN' />
-          </form>
+  const { email, password } = userData;
+  return (
+    <SignInPage>
+      <SignInContainer>
+        <form onSubmit={handleSubmit}>
+          <FormTitle title='EXISTING USER' />
+          <FormInput
+            name='email'
+            type='email'
+            value={email}
+            handleChange={handleChange}
+            labelName='Email'
+          />
+          <FormInput
+            name='password'
+            type='password'
+            value={password}
+            handleChange={handleChange}
+            labelName='Password'
+          />
+          <CustomButton type='submit' buttonContent='LOG IN' />
+        </form>
 
-          <Separator>OR SIGN IN WITH:</Separator>
+        <Separator>OR SIGN IN WITH:</Separator>
 
-          <SignInWithGoogle onClick={this.signInWithGoogle} />
+        <SignInWithGoogle onClick={signInWithGoogle} />
 
-          {this.state.isLoading && <Loader />}
+        {userData.isLoading && <Loader />}
 
-          {this.props.currentUser && <Redirect to='/' />}
-        </SignInContainer>
-      </SignInPage>
-    );
-  }
+        {props.currentUser && <Redirect to='/' />}
+      </SignInContainer>
+    </SignInPage>
+  );
 };
 
 export default SignIn;
