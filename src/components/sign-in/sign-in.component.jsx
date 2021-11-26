@@ -9,6 +9,7 @@ import { signInWithPopup } from 'firebase/auth';
 import { Redirect } from 'react-router';
 import { validateSignIn } from "../../helperScripts/validationFunctions";
 import Loader from "../loader/loader.component";
+import { useSelector } from 'react-redux';
 
 function SignIn(props) {
   const [userData, setUserData] = useState({
@@ -17,6 +18,8 @@ function SignIn(props) {
     currentUser: props.currentUser,
     isLoading: false,
   });
+
+  const currentUser = useSelector(state => state.user);
 
   async function signInWithGoogle() {
     try {
@@ -77,7 +80,7 @@ function SignIn(props) {
 
         {userData.isLoading && <Loader />}
 
-        {props.currentUser && <Redirect to='/' />}
+        {currentUser.id && <Redirect to='/' />}
       </SignInContainer>
     </SignInPage>
   );

@@ -2,10 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { CheckoutContainer, CheckoutGrid, Title, TakeMoneyContainer, ProductPrice } from './checkout-page.styles';
 import ProductCard from '../../components/product-card/product-card.component';
 import CustomButton from '../../components/custom-button/custom-button.component';
+import { useSelector, useDispatch } from 'react-redux';
+import { clearCart } from '../../redux/cartSlice';
 
-function CheckoutPage({cartItems, clearCart}) {
+function CheckoutPage() {
   const [productCardList, setProductCardList] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
+
+  const cartItems = useSelector(state => state.cart.cartItems);
+  const dispatch = useDispatch();
 
     useEffect(() => {
       setProductCardList(cartItems.map(product => (
@@ -38,7 +43,7 @@ function CheckoutPage({cartItems, clearCart}) {
           () => {
             localStorage.removeItem('cartItems');
             localStorage.removeItem('numberOfCartItems');
-            clearCart();
+            dispatch(clearCart());
             setProductCardList([]);
             setTotalPrice(0);
           }} buttonContent='PAY NOW'/> button clears local storage and cart

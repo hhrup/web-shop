@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import Header from './components/header/header.component';
 import GlobalStyle from './globalStyles';
 import { Route, Switch } from 'react-router';
@@ -9,42 +9,18 @@ import CreateProduct from './components/create-product/create-product.component'
 import SignIn from './components/sign-in/sign-in.component';
 import SignUp from './components/sign-up/sign-up.component';
 import CheckoutPage from './pages/checkoutPage/checkout-page.component';
+import { useDispatch } from 'react-redux';
+import { setCurrentUser } from './redux/userSlice';
 
-function App(props) {
-  const [currentUser, setCurrentUser] = useState('');
-  const [cartState, setCartState] = useState({
-    cartItems: JSON.parse(localStorage.getItem('cartItems')) || [],
-    numberOfCartItems: Number.parseInt(localStorage.getItem('numberOfCartItems')) || 0,
-  });
-
-  function addToCart(product) {
-    let newCartItems;
-    if (!cartState.cartItems.find(element => element.id === product.id))
-      newCartItems = [...cartState.cartItems, product];
-    else {
-      newCartItems = cartState.cartItems;
-      alert('Product already in cart!');
-    }
-
-    const newNumberOfCartItems = newCartItems?.length || cartState.cartItems.length;
-
-    localStorage.setItem('cartItems', JSON.stringify(newCartItems));
-    localStorage.setItem('numberOfCartItems', newNumberOfCartItems);
-
-    if(newCartItems.length !== cartState.cartItems)
-      setCartState({ cartItems: newCartItems, numberOfCartItems: newNumberOfCartItems});
-  };
-
-  function clearCart() {
-    setCartState({ cartItems: [], numberOfCartItems: 0});
-  }
+function App() {
+  const dispatch = useDispatch();
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        setCurrentUser(user);
+        dispatch(setCurrentUser({ email: user.email, id: user.uid }));
       } else {
-        setCurrentUser('');
+        dispatch(setCurrentUser({ email: '', id: '' }));
       }
     });
   }, []);
@@ -52,22 +28,22 @@ function App(props) {
   return(
     <div>
       <GlobalStyle />
-      <Header currentUser={currentUser} numberOfCartItems={cartState.numberOfCartItems}/>
+      <Header />
       <Switch>
         <Route exact path='/' >
-          <Homepage currentUser={currentUser} addToCart={addToCart}/>
+          <Homepage />
         </Route>
         <Route exact path='/createProduct'>
           <CreateProduct />
         </Route>
         <Route exact path='/signup'>
-          <SignUp currentUser={currentUser}/>
+          <SignUp />
         </Route>
         <Route exact path='/login'>
-          <SignIn currentUser={currentUser}/>
+          <SignIn />
         </Route>
         <Route exact path='/checkout'>
-          <CheckoutPage cartItems={cartState.cartItems} currentUser={currentUser} clearCart={clearCart}/>
+          <CheckoutPage />
         </Route>
       </Switch>
     </div>

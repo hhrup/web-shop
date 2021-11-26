@@ -5,7 +5,7 @@ import {ReactComponent as EditIcon} from '../../assets/svg/pencil.svg';
 import {ReactComponent as DeleteIcon} from '../../assets/svg/trash.svg';
 
 export const ProductCardContainer = styled.div`
-  border: 1px solid;
+  border: 1px solid #7048e8;
   border-radius: 6px;
   display: flex;
   flex-direction: column;
@@ -16,11 +16,10 @@ export const ProductCardContainer = styled.div`
   min-width: 16rem;
   max-width: 22rem;
   height: 40rem;
-  transition: all 0.3s;
+  transition: all 0.2s;
 
   &:hover {
-    border-color: #40c057;
-    box-shadow: 0 0 1.6rem 0.8rem rgba(112, 72, 232, 0.1);
+    box-shadow: 0 0 1.2rem 0.4rem rgba(112, 72, 232, 0.4);
   }
 `;
 

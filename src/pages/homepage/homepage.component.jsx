@@ -9,47 +9,48 @@ import {
 import { getCategoriesOrProducts } from '../../firebase/firebase.database';
 import configData from '../../helperScripts/appConfig';
 import ProductsGrid from '../../components/products-grid/products-grid.component';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchCategories, setCategory } from '../../redux/productsSlice';
 
-function Homepage(props) {
-  const [menuItemList, setMenuItemList] = useState([]);
-  const [currentCategory, setCurrentCategory] = useState(localStorage.getItem('currentCategory') || '');
+function Homepage() {
+  const currentUser = useSelector(state => state.user);
+  const menuCategoriesList = useSelector(state => state.products.menuCategoriesList);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchCategories());
+  }, []);
 
   function setStateProductsGrid(category) {
-      localStorage.setItem('currentCategory', category)
-      setCurrentCategory(category);
+     localStorage.setItem('currentCategory', category);
+     dispatch(setCategory(category));
   }
 
-  async function menuSetup() {
-    const categoriesList = await getCategoriesOrProducts('productCategories');
+  function menuSetup(categoriesList) {
+    if(categoriesList.length > 0) {
     const menuItemList = categoriesList.map((category, index) => (
     <MenuItem key={index} onClick={() => setStateProductsGrid(category)}>{category}</MenuItem>
     ));
-    setMenuItemList([...menuItemList]);
+    return menuItemList;
+    }
   }
-
-  useEffect(() => {
-    menuSetup();
-  }, []);
 
   return (
     <HomePageContainer>
       <MenuContainer>
         <MenuTitle>
           {
-            props.currentUser.uid === configData.adminFirebaseUserId ? 
+            currentUser.id === configData.adminFirebaseUserId ? 
             <MenuTitleAdmin to='/createProduct'>Add new product +</MenuTitleAdmin>
             : 'Categories'
           }
         </MenuTitle>
           {
-            menuItemList
+            menuSetup(menuCategoriesList)
           }
       </MenuContainer>
-      <ProductsGrid 
-        category={currentCategory}
-        currentUser={props.currentUser}
-        addToCart={props.addToCart}
-        />
+      <ProductsGrid />
     </HomePageContainer>
   );
 }

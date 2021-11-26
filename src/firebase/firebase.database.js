@@ -28,7 +28,7 @@ HOW IT WORKS WITH STORAGE:
 
 // Get an array of documents(categories), optional: get documents(products) from product collection that each category has
 export async function getCategoriesOrProducts(category) {
-  if (!category) return false;
+  if (!category) return [];
 
   const pathToProductCollection = category === 'productCategories' ? '' : `${category}/product`;
   const catsOrProdCollection = collection(db, `productCategory/${pathToProductCollection}`);

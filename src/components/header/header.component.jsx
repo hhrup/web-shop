@@ -13,11 +13,15 @@ import {
 } from './header.styles';
 import { signOut } from 'firebase/auth';
 import { auth } from '../../firebase/firebase.auth';
+import { useSelector } from 'react-redux';
 
-const Header = props => {
+export default function Header() {
+  const currentUser = useSelector(state => state.user);
   async function logOut() {
     await signOut(auth);
   }
+
+  const numberOfCartItems = useSelector(state => state.cart.numberOfCartItems);
 
   return (
     <HeaderContainer>
@@ -26,13 +30,13 @@ const Header = props => {
       </HomeLogoContainer>
       <CartAndSignInContainer>
         <CartLogoContainer to='/checkout'>
-          <CartItemCount>{props.numberOfCartItems}</CartItemCount>
+          <CartItemCount>{numberOfCartItems}</CartItemCount>
           <CartLogo />
         </CartLogoContainer>
-        {props.currentUser ?
+        {currentUser.id ?
           (
             <SignUpSignIn to='#' onClick={logOut}>
-                Welcome {props.currentUser.email.split('@')[0].toUpperCase()}. Log out
+                Welcome {currentUser.email.split('@')[0].toUpperCase()}. Log out
             </SignUpSignIn>
           )
           :
@@ -48,5 +52,3 @@ const Header = props => {
     </HeaderContainer>
   );
 }
-
-export default Header;

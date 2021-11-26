@@ -7,9 +7,11 @@ import FormTitle from '../form-title/form-title.component';
 import { Redirect } from 'react-router';
 import { validateSignUp } from '../../helperScripts/validationFunctions';
 import { SignUpPage } from './sign-up.styles';
+import { useSelector } from 'react-redux';
 
-function SignUp(props) {
+function SignUp() {
   const [userData, setUserData] = useState({email: '', password: '', confirmPassword: ''})
+  const currentUser = useSelector(state => state.user);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -63,7 +65,7 @@ function SignUp(props) {
           labelName='Confirm password'
         />
         <CustomButton type='submit' buttonContent='SIGN UP' />
-        {props.currentUser && <Redirect to='/' />}
+        {currentUser.id && <Redirect to='/' />}
       </form>
     </SignUpPage>
   );
