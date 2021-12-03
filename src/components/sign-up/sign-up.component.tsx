@@ -7,13 +7,13 @@ import FormTitle from '../form-title/form-title.component';
 import { Redirect } from 'react-router';
 import { validateSignUp } from '../../helperScripts/validationFunctions';
 import { SignUpPage } from './sign-up.styles';
-import { useSelector } from 'react-redux';
+import { useAppSelector } from '../../redux/hooks';
 
 function SignUp() {
   const [userData, setUserData] = useState({email: '', password: '', confirmPassword: ''})
-  const currentUser = useSelector(state => state.user);
+  const currentUser = useAppSelector(state => state.user);
 
-  async function handleSubmit(e) {
+  async function handleSubmit(e: any) {
     e.preventDefault();
 
     const { email, password, confirmPassword } = userData;
@@ -33,7 +33,7 @@ function SignUp() {
     }
   }
 
-  function handleChange(e) {
+  function handleChange(e: any) {
     const { name, value } = e.target;
 
     setUserData({...userData, [name]: value});
@@ -64,7 +64,7 @@ function SignUp() {
           type='password'
           labelName='Confirm password'
         />
-        <CustomButton type='submit' buttonContent='SIGN UP' />
+        <CustomButton onClick type='submit' buttonContent='SIGN UP' />
         {currentUser.id && <Redirect to='/' />}
       </form>
     </SignUpPage>

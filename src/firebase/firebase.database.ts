@@ -27,13 +27,13 @@ HOW IT WORKS WITH STORAGE:
 */
 
 // Get an array of documents(categories), optional: get documents(products) from product collection that each category has
-export async function getCategoriesOrProducts(category) {
+export async function getCategoriesOrProducts(category: string) {
   if (!category) return [];
 
   const pathToProductCollection = category === 'productCategories' ? '' : `${category}/product`;
   const catsOrProdCollection = collection(db, `productCategory/${pathToProductCollection}`);
 
-  let catOrProdSnapshot;
+  let catOrProdSnapshot: any;
   try {
     catOrProdSnapshot = await getDocs(catsOrProdCollection);
   } catch (error) {
@@ -41,9 +41,9 @@ export async function getCategoriesOrProducts(category) {
   }
 
   const productsList = category === 'productCategories' ? 
-    catOrProdSnapshot.docs.map((doc) => doc.id)
+    catOrProdSnapshot.docs.map((doc: any) => doc.id)
     :
-    (catOrProdSnapshot.docs.map((doc) => ({
+    (catOrProdSnapshot.docs.map((doc: any) => ({
       id: doc.id,
       ...doc.data(),
     })));
@@ -51,9 +51,9 @@ export async function getCategoriesOrProducts(category) {
   return productsList;
 }
 
-export async function uploadProduct(file, product, isProductUpdate, productId, existingImgUrl) {
+export async function uploadProduct(file: any, product: any, isProductUpdate: boolean, productId: string, existingImgUrl: string) {
   try {
-    let imgUrl;
+    let imgUrl: any;
     // doesImgExists = function: if img already exists in storage return URL without uploading the image, else upload the img
     if(!existingImgUrl){
       const doesImgExists = await checkForImgWithTheSameNameInStorage(file.name);
@@ -79,7 +79,7 @@ export async function uploadProduct(file, product, isProductUpdate, productId, e
 }
 
 // main function used for adding products and categories. Categories are documents with collection product
-async function addProductToCategory(product) {
+async function addProductToCategory(product: any) {
   try {
     // First create a category document(setDoc) with a field inside it, so it 'exists' and we can read it (it's a Firebase "feature")
     await setDoc(doc(db, `productCategory/${product.category}`), {documentExists: true});
@@ -89,7 +89,7 @@ async function addProductToCategory(product) {
   }
 }
 
-async function updateProduct(product, productId) {
+async function updateProduct(product: any, productId: string) {
   try {
     const productRef = doc(db, `productCategory/${product.category}/product`, `${productId}`);
     await updateDoc(productRef, product);
@@ -98,7 +98,7 @@ async function updateProduct(product, productId) {
   }
 }
 
-export async function deleteDocument(documentId, productCat) {
+export async function deleteDocument(documentId: string, productCat: string) {
   try {
     await deleteDoc(doc(db, `productCategory/${productCat}/product`, `${documentId}`));
   } catch (e) {
@@ -117,7 +117,7 @@ const storageRef = ref(storage);
 // reference(path) to a folder 'images' in cloud storage
 const imagesRef = ref(storageRef, 'images'); 
 
-async function uploadImageAndGetUrl(file) {
+async function uploadImageAndGetUrl(file: any) {
   if (!file) {
     alert('select an image to upload');
     return;
@@ -133,7 +133,7 @@ async function uploadImageAndGetUrl(file) {
 
   try {
     const resizedFile = await fromBlob(file, quality, width, height, format);
-    resizedFile.name = file.name;
+    // resizedFile.name = file.name; what is the purpose of this?
 
     const uploadedImage = await uploadBytes(imgRef, resizedFile);
     const fullPath = uploadedImage.ref.fullPath;
@@ -151,7 +151,7 @@ async function uploadImageAndGetUrl(file) {
   }
 }
 
-async function checkForImgWithTheSameNameInStorage(imgName) {
+async function checkForImgWithTheSameNameInStorage(imgName: string) {
   try {
     const images = await listAll(imagesRef);
     const imgArr = images.items.filter(item => item.name === imgName);

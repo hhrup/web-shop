@@ -9,7 +9,7 @@ import { validateProductCreation } from '../../helperScripts/validationFunctions
 import Loader from '../loader/loader.component';
 import { withRouter } from 'react-router';
 
-function CreateProduct(props) {
+function CreateProduct(props:any) {
   const isProductUpdate = props.location.state;
 
   const [stateObject, setStateObject] = useState({
@@ -18,7 +18,7 @@ function CreateProduct(props) {
     description: '',
     price: 0,
     category: '',
-    categories: '',
+    categories: [] as string[],
     imgPreviewUrl: '',
     imgName: '',
     file: undefined,
@@ -26,7 +26,7 @@ function CreateProduct(props) {
     existingImgUrl: '',
   });
 
-  async function handleSubmit(e) {
+  async function handleSubmit(e:any) {
     e.preventDefault();
 
     const product = {
@@ -43,32 +43,37 @@ function CreateProduct(props) {
     await uploadProduct(file, product, isProductUpdate, stateObject.productId, stateObject.existingImgUrl); 
 
     setStateObject({
-      file: undefined,
-      imgPreviewUrl: '',
-      imgName: '',
+      productId: '',
       name: '',
-      category: '',
       description: '',
       price: 0,
+      category: '',
+      categories: [],
+      imgPreviewUrl: '',
+      imgName: '',
+      file: undefined,
       isUploading: false,
+      existingImgUrl: '',
     });
   }
 
-  function previewImage(file) {
+  function previewImage(file:any) {
     if (file) {
       const fr = new FileReader();
 
       fr.addEventListener('load', (e) => {
+        if(e?.target?.result) {
         setStateObject({ 
           ...stateObject,
-          imgPreviewUrl: e.target.result,
+          imgPreviewUrl: e.target.result.toString(),
           file: file })
+        }
       });
       fr.readAsDataURL(file); // starts reading the file, load event(see event listener above) fired when read completes successfully
     }
   }
 
-  async function handleImgPreview(e) {
+  async function handleImgPreview(e:any) {
     e.preventDefault();
     try {
       const [fileHandle] = await window.showOpenFilePicker();
@@ -83,7 +88,7 @@ function CreateProduct(props) {
     }
   }
 
-  function handleChange(e) {
+  function handleChange(e:any) {
     let { name, value } = e.target;
 
     if (name === 'price') value = Number.parseFloat(value);
@@ -106,7 +111,7 @@ function CreateProduct(props) {
       });
     } else {
       (async function() {
-        const categories = await getCategoriesOrProducts('productCategories');
+        const categories: any[] = await getCategoriesOrProducts('productCategories');
         setStateObject({ ...stateObject, categories: categories });
       })()
     }
@@ -132,7 +137,6 @@ function CreateProduct(props) {
         />
 
         <FormInput
-          isDataList={true}
           options={stateObject.categories}
           name='category'
           value={stateObject.category}
@@ -150,9 +154,8 @@ function CreateProduct(props) {
         />
 
         <FormInput
-          name='description'
           isTextArea={true}
-          type='text'
+          name='description'
           labelName='Product description, separate features with semicolon;'
           value={stateObject.description}
           handleChange={handleChange}

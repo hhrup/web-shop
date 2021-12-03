@@ -13,15 +13,15 @@ import {
 } from './header.styles';
 import { signOut } from 'firebase/auth';
 import { auth } from '../../firebase/firebase.auth';
-import { useSelector } from 'react-redux';
+import { useAppSelector } from '../../redux/hooks';
 
 export default function Header() {
-  const currentUser = useSelector(state => state.user);
+  const currentUser = useAppSelector(state => state.user);
   async function logOut() {
     await signOut(auth);
   }
 
-  const numberOfCartItems = useSelector(state => state.cart.numberOfCartItems);
+  const numberOfCartItems = useAppSelector(state => state.cart.numberOfCartItems);
 
   return (
     <HeaderContainer>

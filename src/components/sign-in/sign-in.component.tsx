@@ -9,17 +9,17 @@ import { signInWithPopup } from 'firebase/auth';
 import { Redirect } from 'react-router';
 import { validateSignIn } from "../../helperScripts/validationFunctions";
 import Loader from "../loader/loader.component";
-import { useSelector } from 'react-redux';
+import { useAppSelector } from "../../redux/hooks";
 
-function SignIn(props) {
+function SignIn() {
+  const currentUser = useAppSelector(state => state.user);
+
   const [userData, setUserData] = useState({
     email: '',
     password: '',
-    currentUser: props.currentUser,
     isLoading: false,
   });
 
-  const currentUser = useSelector(state => state.user);
 
   async function signInWithGoogle() {
     try {
@@ -29,7 +29,7 @@ function SignIn(props) {
     }
   }
 
-  async function handleSubmit(e) {
+  async function handleSubmit(e: any) {
     e.preventDefault();
     const { email, password } = userData;
 
@@ -45,7 +45,7 @@ function SignIn(props) {
     }
   }
 
-  function handleChange(e) {
+  function handleChange(e: any) {
     const { name, value } = e.target;
 
     setUserData({...userData, [name]: value});
@@ -63,6 +63,9 @@ function SignIn(props) {
             value={email}
             handleChange={handleChange}
             labelName='Email'
+            isTextArea
+            isDataList
+            options
           />
           <FormInput
             name='password'
@@ -70,8 +73,11 @@ function SignIn(props) {
             value={password}
             handleChange={handleChange}
             labelName='Password'
+            isTextArea
+            isDataList
+            options
           />
-          <CustomButton type='submit' buttonContent='LOG IN' />
+          <CustomButton onClick type='submit' buttonContent='LOG IN' />
         </form>
 
         <Separator>OR SIGN IN WITH:</Separator>

@@ -2,27 +2,27 @@ import React, { useEffect } from 'react';
 import { ProductsGridContainer } from './products-grid.styles';
 import ProductCard from '../product-card/product-card.component';
 import { deleteDocument } from '../../firebase/firebase.database';
-import { useDispatch, useSelector } from 'react-redux';
 import { addToCart } from '../../redux/cartSlice';
 import { fetchProducts } from '../../redux/productsSlice';
+import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 
 function ProductsGrid() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const category = useSelector(state => state.products.category);
-  const productList = useSelector(state => state.products.productList);
+  const category = useAppSelector(state => state.products.category);
+  const productList = useAppSelector(state => state.products.productList);
 
   useEffect(() => {
     dispatch(fetchProducts(category))
   }, [category]);
 
-  async function deleteDoc(docId, productCat) {
+  async function deleteDoc(docId: string, productCat: string) {
     if(!window.confirm('Delete this product?')) return;
     await deleteDocument(docId, productCat);
     dispatch(fetchProducts(category));
   }
 
-  function createListOfProductCards(productList) {
+  function createListOfProductCards(productList: any[]) {
     if(productList.length === 0) return;
 
     const productCardList = productList.map(product => (
@@ -35,6 +35,7 @@ function ProductsGrid() {
          descriptionList={product.description}
          price={product.price.toString()}
          deleteFunc={() => deleteDoc(product.id, product.category)}
+         isCheckout={false}
          addToCart={
            () => dispatch(addToCart({
              id: product.id,

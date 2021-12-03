@@ -13,16 +13,32 @@ import {
   BtnCartIcon,
   BtnEditIcon,
   BtnDeleteIcon,
-  ControlsContainer
+  ControlsContainer,
 } from './product-card.styles';
 import configData from '../../helperScripts/appConfig';
 import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useAppSelector } from '../../redux/hooks';
 
-function createProductDescList(descriptionList) {
-  if(!descriptionList) return;
+function createProductDescList(descriptionList: string | undefined) {
+  if (!descriptionList) return;
   const featuresList = descriptionList.split(';');
-  return featuresList.map((feature, index) => <ProductDescriptionListItem key={index}>{feature}</ProductDescriptionListItem>);
+  return featuresList.map((feature, index) => (
+    <ProductDescriptionListItem key={index}>
+      {feature}
+    </ProductDescriptionListItem>
+  ));
+}
+
+interface ProductCardTypes {
+  id: string;
+  category: string;
+  imgUrl: string;
+  productName: string;
+  descriptionList: string;
+  price: number;
+  deleteFunc: any;
+  addToCart: any;
+  isCheckout: boolean;
 }
 
 export default function ProductCard({
@@ -35,8 +51,8 @@ export default function ProductCard({
   deleteFunc,
   addToCart,
   isCheckout,
-}) {
-  const currentUser = useSelector((state) => state.user);
+}: Partial<ProductCardTypes>) {
+  const currentUser = useAppSelector((state) => state.user);
 
   return (
     <ProductCardContainer>
@@ -56,7 +72,11 @@ export default function ProductCard({
       {isCheckout && <ProductPrice>{price}$</ProductPrice>}
       {currentUser.id === configData.adminFirebaseUserId && !isCheckout && (
         <ControlsContainer>
-          <CustomButton onClick={addToCart} buttonContent={<BtnCartIcon />} />
+          <CustomButton
+            type=''
+            onClick={addToCart}
+            buttonContent={<BtnCartIcon />}
+          />
           <Link
             to={{
               pathname: '/createProduct',
@@ -70,7 +90,10 @@ export default function ProductCard({
               },
             }}
           >
-            <CustomButton buttonContent={<BtnEditIcon />} />
+            <CustomButton
+              onClick={() => {}}
+              buttonContent={<BtnEditIcon />}
+            />
           </Link>
           <CustomButton
             onClick={deleteFunc}
@@ -80,10 +103,13 @@ export default function ProductCard({
       )}
       {currentUser.id === configData.adminFirebaseUserId || isCheckout || (
         <ControlsContainer>
-          <CustomButton onClick={addToCart} buttonContent={<BtnCartIcon />} />
+          <CustomButton
+            onClick={addToCart}
+            buttonContent={<BtnCartIcon />}
+          />
           <ProductPrice>{price}$</ProductPrice>
         </ControlsContainer>
       )}
     </ProductCardContainer>
   );
-};
+}

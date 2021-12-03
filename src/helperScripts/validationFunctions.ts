@@ -1,4 +1,4 @@
-export function validateSignIn(email, password) {
+export function validateSignIn(email: string, password: string) {
   if(!email) {
     alert(`Email field cannot be empty!`);
     return false;
@@ -12,7 +12,7 @@ export function validateSignIn(email, password) {
   return true;
 }
 
-export function validateSignUp(email, password, confirmPassword) {
+export function validateSignUp(email: string, password: string, confirmPassword: string) {
   if(!validateSignIn(email, password))
     return false;
 
@@ -29,7 +29,7 @@ export function validateSignUp(email, password, confirmPassword) {
   return true;
 }
 
-export function validateProductCreation(file, product, imgUrl) {
+export function validateProductCreation(file: any, product: any, imgUrl: string) {
   if (!file) {
     if(!imgUrl) {
       alert('Choose an image for upload.');
