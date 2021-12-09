@@ -20,7 +20,6 @@ function SignIn() {
     isLoading: false,
   });
 
-
   async function signInWithGoogle() {
     try {
       await signInWithPopup(auth, googleAuthProvider);
@@ -63,9 +62,6 @@ function SignIn() {
             value={email}
             handleChange={handleChange}
             labelName='Email'
-            isTextArea
-            isDataList
-            options
           />
           <FormInput
             name='password'
@@ -73,9 +69,6 @@ function SignIn() {
             value={password}
             handleChange={handleChange}
             labelName='Password'
-            isTextArea
-            isDataList
-            options
           />
           <CustomButton onClick type='submit' buttonContent='LOG IN' />
         </form>
