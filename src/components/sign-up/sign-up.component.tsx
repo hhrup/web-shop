@@ -64,7 +64,7 @@ function SignUp() {
           type='password'
           labelName='Confirm password'
         />
-        <CustomButton onClick type='submit' buttonContent='SIGN UP' />
+        <CustomButton type='submit' buttonContent='SIGN UP' />
         {currentUser.id && <Redirect to='/' />}
       </form>
     </SignUpPage>

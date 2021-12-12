@@ -70,7 +70,7 @@ function SignIn() {
             handleChange={handleChange}
             labelName='Password'
           />
-          <CustomButton onClick type='submit' buttonContent='LOG IN' />
+          <CustomButton type='submit' buttonContent='LOG IN' />
         </form>
 
         <Separator>OR SIGN IN WITH:</Separator>
